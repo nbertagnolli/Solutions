@@ -1,4 +1,4 @@
-\subsection*{Problem 3}
+\Large\textbf{Problem 3}
 The Probability of Selecting an Apple can be decomposed as:
 \begin{align*}
 \prob(apple) &= \prob(apple, red) + \prob(apple, blue) + prob(apple, green)\\ 
@@ -15,7 +15,24 @@ The probability that observing an orange came from the green box can be solved u
 &= .27
 \end{align*}
 
-\subsection*{Problem 5}
+\Large\textbf{Problem 5}
 \begin{align*}
-  
+  \var{X} &= \Exp{(X - \Exp{X})^2}\\
+  &= \Exp{X^2 - 2X\Exp{X} + \Exp{X}^2}  && \text{Distributive Law}\\
+  &= \Exp{X^2} + \Exp{-2X\Exp{X}} + \Exp{\Exp{X}^2}  && \text{Linearity of } \Exp{X}\\
+  &= \Exp{X^2} + -2\Exp{X\Exp{X}} + \Exp{X}^2  && \Exp{\alpha X} = \alpha\Exp{X}\\
+  &= \Exp{X^2} + -2\Exp{X}^2 + \Exp{X}^2 && \Exp{X}\text{ is just another constant see above}\\
+  &= \Exp{X^2} -\Exp{X}^2\\
 \end{align*}
+
+\Large\textbf{Problem 6}
+
+$\cov{X,Y} = \Exp{X,Y} - \Exp{X}\Exp{Y}$ But because $X \perp Y \Rightarrow \Exp{X,Y} = \Exp{X}\Exp{Y} \Rightarrow \cov{X,Y} = 0$
+
+\Large\textbf{Problem 7}
+
+\Large\textbf{Problem 8}
+
+\Large\textbf{Problem 9}
+
+\Large\textbf{Problem 10}
