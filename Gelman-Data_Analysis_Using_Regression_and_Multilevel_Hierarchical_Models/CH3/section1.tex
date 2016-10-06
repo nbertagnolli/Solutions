@@ -1,0 +1,288 @@
+
+\subsection*{Problem 1}
+
+\subsubsection*{(a)}
+\begin{verbatim}
+library(arm)
+setwd('~/Code/workspace/Gelman/')
+data <- read.table('exercise2.1.txt', header=TRUE)
+fit.1 <- lm(y ~ x1 + x2, data=data)
+summary(fit.1)
+\end{verbatim}
+
+\subsubsection*{(b)}
+\begin{verbatim}
+beta.hat <- coef(fit.1)
+beta.sim <- sim(fit.1)
+
+par(mfrow=c(1, 2))
+plot(data$x1, data$y)
+apply(coef(sim(fit.1)), 1, function(beta) {curve(cbind(1, x, mean(data$x2)) %*% beta, add=TRUE, col="gray")})
+curve(cbind(1, x, mean(data$x2)) %*% coef(fit.1), add=TRUE)
+
+plot(data$x2, data$y)
+apply(coef(sim(fit.1)), 1, function(beta) {curve(cbind(1, mean(data$x1), x) %*% beta, add=TRUE, col="gray")})
+curve(cbind(1, mean(data$x1), x) %*% coef(fit.1), add=TRUE)
+\end{verbatim}
+
+\subsubsection*{(c)}
+\begin{verbatim}
+par(mfrow=c(1,2))
+plot(data$x1[1:40], fit.1$residuals, xlab='X1', ylab='Residuals')
+
+plot(data$x2[1:40], fit.1$residuals, xlab='X2', ylab='Residuals')
+
+plot(predict(fit.1, data[1:40, ]), fit.1$residuals)
+\end{verbatim}
+For X1 it appears that all of the assumptions are met.  However, for X2 we can see some heteroscedasticity so we could potentially improve our model with some additional feature or a variable transformation.
+
+\subsubsection*{d)}
+\begin{verbatim}
+predictions <- data.frame(predict(fit.1, data[41:dim(data)[1], ], level=.95, interval="predict"))
+predictions
+\end{verbatim}
+I feel pretty good about these predictions.  the standard error seems to be about 1, so the 95\% confidence interval contains $\pm2$  of our estimate.
+
+
+\subsection*{Problem 2}
+\subsubsection*{(a)}
+We want to find the coefficients of the following equation:
+
+\begin{align*}
+\log (y) &= \alpha + \beta \log (h) \\
+\end{align*}
+
+We are given $\beta = .8$ now we just need to solve for alpha and get $\alpha = 6.957$
+
+To calculate the standard deviation of the residuals.  Notice that our 95\% confidence interval is within a factor of 1.1 of our prediction. in other words it is $[x / 1.1, 1.1x]$.  Examining this on the log scale:
+
+\begin{align*}
+2\hat{\sigma} &= \log(1.1x)\\
+&= \log(x) + \log(1.1)\\
+\end{align*}
+Which means that $\hat{\sigma} = .047$
+
+\section*{(b)}
+
+We can just use the equation for $R^2$
+
+\begin{align*}
+R^2 &= 1 - \frac{\hat{\sigma}^2}{\sigma^2}\\
+&= 1 - \frac{.047}{.05}\\
+&= .94
+\end{align*}
+
+\subsection*{Problem 3}
+\subsubsection*{(a)}
+\begin{verbatim}
+var1 <- rnorm(1000, 0 , 1)
+var2 <- rnorm(1000, 0 , 1)
+fit.3 <- lm(var1 ~ var2)
+summary(fit.3)
+\end{verbatim}
+
+No the p-value of the intercept is .226, indicating it does not meet the widely accepted .05 significance level.
+
+\subsubsection*{(b)}
+\begin{verbatim}
+z.scores.all <- rep(NA, 1000)
+for (j in 1:1000) {
+  z.scores <- rep(NA, 100)
+  for (k in 1:100) {
+    var1 <- rnorm(1000, 0, 1)
+    var2 <- rnorm(1000, 0, 1)
+    fit <- lm(var1 ~ var2)
+    z.scores[k] <- coef(fit)[2] / se.coef(fit)[2]
+  }
+  z.scores.all[j] <- sum(z.scores >= 2)
+}
+
+z.scores.sorted <- sort(z.scores.all)
+median(z.scores.sorted)
+z.scores.sorted[50]
+z.scores.sorted[950]
+\end{verbatim}
+
+I ran the analysis for 1000 trials.  I find that the median value is 2.  I find that the ~95\% confidence interval is [0, 5]
+
+\subsection*{Problem 4}
+\subsubsection*{(a)}
+\begin{verbatim}
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-67.109 -11.798   2.971  14.860  55.210 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  67.7827     8.6880   7.802 5.42e-14 ***
+momage        0.8403     0.3786   2.219    0.027 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 20.34 on 398 degrees of freedom
+Multiple R-squared:  0.01223,	Adjusted R-squared:  0.009743 
+F-statistic: 4.926 on 1 and 398 DF,  p-value: 0.02702
+\end{verbatim}
+
+The slope coefficient implies that for each unit increase in momage the child's test score will increase by .8403 units.  It looks like mothers should give birth later in life.  In making these recommendations I'm assuming that momage is the only feature relevant to the test performance of the children.
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH3/P04.png}
+\end{figure}
+
+\subsubsection*{(b)}
+
+\begin{verbatim}
+library("foreign")
+iq.data <- read.dta("child.iq.dta")
+fit.4 <- lm(ppvt ~ ., data=iq.data)
+summary(fit.4)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-61.763 -13.130   2.495  14.620  55.610 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  69.1554     8.5706   8.069 8.51e-15 ***
+educ_cat      4.7114     1.3165   3.579 0.000388 ***
+momage        0.3433     0.3981   0.862 0.389003    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 20.05 on 397 degrees of freedom
+Multiple R-squared:  0.04309,	Adjusted R-squared:  0.03827 
+F-statistic: 8.939 on 2 and 397 DF,  p-value: 0.0001594
+\end{verbatim}
+
+From the Summary statistics we can see that momage does not appear to contribute significantly to the model.  To test this let's run ANOVA.
+
+\begin{verbatim}
+fit.4.noage <- lm(ppvt ~ educ_cat, data=iq.data)
+anova(fit.4.noage, fit.4)
+
+Analysis of Variance Table
+
+Model 1: ppvt ~ educ_cat
+Model 2: ppvt ~ educ_cat + momage
+  Res.Df    RSS Df Sum of Sq      F Pr(>F)
+1    398 159816                           
+2    397 159517  1    298.82 0.7437  0.389
+\end{verbatim}
+
+These ANOVA results indicate that the addition of the momage variable does not add any predictive power.  Thus we should change our conclusions in (a).  This information suggests that it does not matter when a mother gives birth.
+
+Next I plot the regression line for both variables.
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH3/CH3_P04.png}
+\end{figure}
+
+\subsubsection*{(c)}
+
+\begin{verbatim}
+# Create Highschool completion factor
+iq.data$educ_cat <- as.factor(iq.data$educ_cat)
+temp <- model.matrix( ~ educ_cat - 1, data=iq.data )
+iq.data <- cbind(iq.data, temp)
+head(iq.data)
+
+fit.4.c <- lm(ppvt ~ momage + momage*educ_cat2, data=iq.data)
+summary(fit.4.c)
+
+lm(formula = ppvt ~ momage + momage * educ_cat2, data = iq.data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-65.041 -11.594   2.896  14.886  56.995 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       62.4546    11.8408   5.275  2.2e-07 ***
+momage             0.9820     0.5132   1.914   0.0564 .  
+educ_cat2          9.6726    17.4080   0.556   0.5788    
+momage:educ_cat2  -0.2517     0.7587  -0.332   0.7402    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 20.29 on 396 degrees of freedom
+Multiple R-squared:  0.02175,	Adjusted R-squared:  0.01433 
+F-statistic: 2.934 on 3 and 396 DF,  p-value: 0.0333
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH3/P04_C.png}
+\end{figure}
+
+\subsubsection{(d)}
+\begin{verbatim}
+par(mfrow=c(1, 1))
+iq.data <- read.dta("child.iq.dta")
+fit.4.d <- lm(ppvt ~ ., data=iq.data[1:200, ])
+predicted = predict(fit.4.d, iq.data[200:400, ])
+plot(iq.data[200:400, ]$ppvt, predicted)
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH3/P4_D.png}
+\end{figure}
+\newpage
+
+
+\subsection*{Problem 5}
+\subsubsection*{(a)}
+\begin{verbatim}
+# Do more beautiful professors get better marks
+par(mfrow=c(1, 1))
+plot(data$btystdave, data$courseevaluation)
+
+fit.5.beauty <- lm(courseevaluation ~ btystdave, data=data)
+curve(fit.5.beauty$coef[1] + fit.5.beauty$coef[2] * x, add=TRUE)
+
+# Add dotted lines to show +/- 1 standard deviation
+curve (fit.5.beauty$coef[1] + fit.5.beauty$coef[2]*x + summary(fit.5.beauty)$sigma, lty=2, add=T)
+curve (fit.5.beauty$coef[1] + fit.5.beauty$coef[2]*x - summary(fit.5.beauty)$sigma, lty=2, add=T)
+
+# Look at male and female professors
+fit.5.gender <- lm(courseevaluation ~ btystdave + female, data=data)
+
+par(mfrow=c(1,2))
+plot(data$btystdave[data$female == 0], data$courseevaluation[data$female == 0],
+     xlab='beauty', ylab='average teaching evaluation', main='Men')
+curve(fit.5.gender$coef[1] + fit.5.gender$coef[2] * x, add=TRUE)
+
+plot(data$btystdave[data$female == 1], data$courseevaluation[data$female == 1],
+     xlab='beauty', ylab='average teaching evaluation', main='Females')
+curve(fit.5.gender$coef[1] + fit.5.gender$coef[2] * x + fit.5.gender$coef[3] * 1, add=TRUE)
+
+\end{verbatim}
+
+Regressing on just beauty gives us an $R^2=.035$ so the model fit isn't great.  Below I plot the fit for beauty vs course evaluation.
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH3/5_a_01.png}
+\end{figure}
+
+Now let's see if gender plays a role in the courseevaluations.  We find that our $R^2$ has doubled and both beauty and gender seem to be statistically significant.  We can interpret the coefficients as follows:
+
+\begin{enumerate}
+\item[I-] (Intercept) For a female teacher with 0 beauty we can expect a course rating between [4.02, 4.16] with 95\% confidence
+\item[-] (beauty) We can expect that for a female instructor an increase in beauty of 1 will result in an increase in the course evaluation by .148
+\item[-] (female) A male teacher with 0 beauty will have coursevaluation reduced by .198 on average.
+\end{enumerate}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH3/5_a_02.png}
+\end{figure}
+
+
+
+
+
+
