@@ -1,0 +1,492 @@
+
+\subsection*{Problem 1}
+
+\subsubsection*{(a)}
+
+The bounds are easy to scale, just apply the exponential.  So the weights will be within a factor of $[e^{-.25}, e^{.25}]$.
+
+\subsubsection*{(b)}
+\begin{verbatim}
+# Create a fictional population composed of two distinct groups with different means
+group_1 <- rnorm(n=50, 50, sd = 2.5)
+group_2 <- rnorm(n=50, 60, sd = 3)
+heights <- c(group_1, group_2)
+log.heights <- log(heights)
+
+# Use the model to generate weights
+log.weights <- -3.5 + 2 * log.heights + rnorm(n=100, mean=0, sd=.1)
+
+# Fit the model
+fit.1 <- lm(log.weights ~ log.heights)
+
+
+# plot the model and data points
+plot(log.heights, log.weights,main='Simulated plot of w=-3.5+2log(h)+error')
+curve(cbind(1, x) %*% coef(fit.1), add=TRUE)
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH4/Gellman_CH04_P01_01.png}
+\end{figure}
+
+\subsection*{Problem 2}
+\subsubsection*{(a)}
+I looked at the data and found that there were about 670 ish rows that had missing values so I removed them.
+
+\begin{verbatim}
+heights <- read.dta('heights.dta')
+
+# How many missing values
+sum(is.na(heights))
+
+# Remove all rows with missing values 
+heights <- heights[complete.cases(heights), ]
+\end{verbatim}
+
+\subsection*{(b)}
+I trained a plain model but the intercept represents the earnings of someone who is 0 ft tall.  This doesn't make sense because it is impossible.  In order to interpret the intercept as the average earnings of someone of average height we need to subtract off the mean height and divide by the standard deviation.  In other words standardize using a z-score.
+\begin{verbatim}
+# Fit model with height as predictor
+fit.2 <- lm(earn ~ height, data=heights)
+summary(fit.2)
+
+# Transform the data so that the intercept is average earnings for people with average height
+heights.scaled <- heights
+heights.scaled$height <- (heights$height - mean(heights$height)) / sd(heights$height)
+fit.2 <- lm(earn  ~ height, data=heights.scaled)
+summary(fit.2)
+\end{verbatim}
+
+
+\subsubsection*{(c)}
+\begin{verbatim}
+# Transform variables in various ways
+sex <- heights$sex - 1
+height <- heights$height
+log.height <- log(heights$height)
+z.height <- (heights$height - mean(heights$height)) / sd(heights$height)
+earn <- heights$earn
+log.earn <- heights$earn
+
+# Fit model using sex, height
+fit.2.c <- lm(earn ~ sex + height)
+summary(fit.2.c)
+
+# Fit model using log height and log earn
+fit.2.c <- lm(log.earn ~ sex + log.height)
+summary(fit.2.c)
+
+# Fit model with interaction between sex and height
+fit.2.c <- lm(earn ~ sex + z.height + sex*z.height)
+summary(fit.2.c)
+\end{verbatim}
+	
+\subsubsection*{(d)}
+The model that I chose to stick with is the last one earn = sex + z.height + sex * z.height.  I felt like it was the easiest to interpret and also had the highest $R^2$ of the models that I examined, mainly due to the interaction term.  Below is the summary:
+\begin{verbatim}
+Call:
+lm(formula = earn ~ sex + z.height + sex * z.height)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-31209 -12591  -3172   7223 171109 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)     26259       1248  21.041  < 2e-16 ***
+sex            -10868       1492  -7.286 5.36e-13 ***
+z.height         2940       1047   2.809  0.00505 ** 
+sex:z.height    -1536       1412  -1.088  0.27670    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 18460 on 1375 degrees of freedom
+Multiple R-squared:  0.1296,	Adjusted R-squared:  0.1277 
+F-statistic: 68.22 on 3 and 1375 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+The interpretation of the coefficients is as follows:
+\begin{enumerate}
+\item[-] (Intercept) The intercept is the average earnings for an average height male.
+\item[-] (sex) The sex represents the difference in salary between a male of average height and a female of average height.  With the average height female being 10868 fewer dollars than the male.
+\item[-] (sex*height) This term helps control for the difference in the average heights between males and females.
+\end{enumerate}
+
+\subsection*{Problem 3}
+Here we just need to plot a few things so below you can find the code for the plotting, and the plots :)
+\begin{verbatim}
+ggplot(data.frame(x=c(0, 10)), aes(x)) + 
+    stat_function(fun=function(x) 161 + 2.6 * x) +
+    stat_function(fun=function(x) 96.2 + 33.6 * x - 3.2 * (x)^2, col="blue") + 
+    labs(x="age (decades)", y="weight (pounds)")
+
+ggplot(data.frame(x=c(0, 10)), aes(x)) + 
+    stat_function(fun=function(x) 157.2 + 
+                    19.1 * ifelse(3 <= x & x < 4.5, 1, 0) + 
+                    27.2 * ifelse(4.5 <= x & x < 6.5, 1, 0) + 
+                    8.50 * ifelse(6.5 <= x, 1, 0)) + 
+    labs(x="age (decades)", y="weight (pounds)")
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH4/Gellman_CH04_P03_01.png}
+\end{figure}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH4/Gellman_CH04_P03_02.png}
+\end{figure}
+
+\subsection*{Problem 4}
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH4/Gellman_CH04_P04_01.png}
+\end{figure}
+
+It looks like a linear regression model would fit this data well.  There are a few outliers, however just between these two it looks like it follows a pretty linear trend.
+
+
+
+\subsubsection*{(a)}
+\begin{verbatim}
+# Load in Data
+pollution <- read.dta('pollution.dta')
+attach(pollution)
+
+# Plot nitric oxide vs mortality
+plot(nox, mort)
+
+# Fit the model
+fit.4.a <- lm(mort ~ nox)
+summary(fit.4.a)
+
+# Examine Residuals
+plot(nox, resid(fit.4.a), ylab='Residuals', main='Residual plot of mort ~ nox')
+par(mfrow=c(2,2))
+plot(fit.4.a)
+
+# Examine fit on plot
+par(mfrow=c(1,1))
+plot(nox, mort)
+abline(fit.4.a)
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{CH4/Gellman_CH04_P04_01.png}
+\end{figure}
+
+It looks like a linear regression model would fit this data well.  There are a few outliers, however just between these two it looks like it follows a pretty linear trend.
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{CH4/Gellman_CH04_P04_02.png}
+\end{figure}
+
+The residual plot is peculiar because it looks exactly like the original.  This indicates to me that the fitted line is almost flat through the data.  This most likely happened due to the outliers.
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{CH4/Gellman_CH04_P04_04.png}
+\end{figure}
+
+We can see that this hypothesis is reasonable in the above plot.
+
+\newpage
+
+\subsubsection*{(b)}
+
+Log transform the predictor and the response.  This will fix our problem, by drastically reducing the perceived size of the outliers.
+\begin{verbatim}
+# Log transform the data
+log.nox <- log(nox)
+log.mort <- log(mort)
+fit.4.b <- lm(log.mort ~ log.nox)
+plot(log.nox, log.mort)
+abline(fit.4.b)
+
+ggplot(data=pollution, aes(x=log.nox, y=log.mort)) + geom_point() + 
+  stat_smooth(method="lm", formula=y ~ x, se=TRUE) +
+  labs(title='log.mort ~ log.nox')
+
+ggplot(data=pollution, aes(x=log.nox, y=resid(fit.4.b))) + geom_point() + 
+  labs(title='Residuals for log.mort ~ log.nox')
+\end{verbatim}
+
+ \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH4/Gellman_CH04_P04_05.png}
+\end{figure}
+
+ \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH4/Gellman_CH04_P04_06.png}
+\end{figure}
+
+
+\subsubsection*{(c)}
+\begin{verbatim}
+Call:
+lm(formula = log.mort ~ log.nox)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.18930 -0.02957  0.01132  0.03897  0.16275 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 6.807175   0.018349 370.975   <2e-16 ***
+log.nox     0.015893   0.007048   2.255   0.0279 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.06412 on 58 degrees of freedom
+Multiple R-squared:  0.08061,	Adjusted R-squared:  0.06476 
+F-statistic: 5.085 on 1 and 58 DF,  p-value: 0.02792
+\end{verbatim}
+
+\begin{enumerate}
+\item[-] (Intercept) The intercept represents the log(mortality) when nox is 0.  We can transform back to the original scale with $e^{6.8}$ to get the mortality at nox=0.
+\item[-] (log.nox) For each 1\% increase in nitrous oxide we can expect a 1.5\% increase in mortality rate
+\end{enumerate}
+
+\subsubsection*{(d)}
+\begin{verbatim}
+z.nox <- (nox - mean(nox)) / sd(nox)
+z.hc <- (hc - mean(hc)) / sd(hc)
+z.so2 <- (so2 - mean(so2)) / sd(so2)
+
+fit.4.d <- lm(log(mort) ~ z.nox + z.hc + z.so2)
+summary(fit.4.d)
+\end{verbatim}
+
+I fitted the log mortality rate vs the z-scored predictors.  This allowed for the easiest interpretation in my opinion.
+
+\begin{enumerate}
+\item[-] (Intercept) The average mortality rate for the average levels of nox, hc, and so2 is $e^{6.84}$
+\item[-] (z.nox) one standard deviation difference in nox results in $e^{.148} = 1.15$ times, or a 15\%, increase in mortality rate
+\item[-] (z.hc) One standard deviation difference in hydrocarbons results in $e^{-.16 = .84}$ times, or -16\% decrease in mortality rate
+\item[-] (z.so2) One standard deviation difference in $SO_2$ results in a 1.3\% increase in mortality rate.
+\end{enumerate}
+
+\subsubsection*{(e)}
+
+\begin{verbatim}
+# Create the dataframe
+df <- data.frame(mort, z.nox, z.hc, z.so2)
+
+# Split into training and testing sets
+train <- df[1:round(nrow(df) / 2), ]
+test <- df[(round(nrow(df) / 2) + 1):nrow(df), ]
+
+# Fit the model and make predictions
+fit.4.e <- lm(log(mort) ~ z.nox + z.so2 + z.hc, data=train)
+predictions <- predict(fit.4.e, test)
+cbind(truth=test$mort, prediction=exp(predictions), diff=test$mort-exp(predictions))
+\end{verbatim}
+
+
+\subsection*{Problem 5}
+
+\subsubsection*{(a)}
+\begin{enumerate}
+\item[-] (Difference) It is a simple statistic and is easy to interpret.  It can lead to difficulties in interpreting proportions.  You can have the same difference in fundraising and have widely different levels of closeness.
+\item[-] (Ratio) The ratio addresses the proportional problem with difference.  However, it is not symmetric.  It is centered at 1 when both earn the same amount of money.
+\item[-] (Log Difference) This is very similar to the first transformation, however it is less sensitive to outliers.
+\item[-] (Relative Proportion) Centered at 0 and is symmetric.  It will do well at capturing relative differences
+\end{enumerate}
+
+\subsubsection*{(b)}
+You could transform them into an indicator feature 0 if republicans raised more and 1 if democrats did.  This is advantageous because we are trying to predict voter shares in a larger model.  This feature captures a large part of the relative information, did democrats do better or not?  A major drawback is that we are discarding a lot of information.  Namely how much better the democrats are doing.
+
+\subsection*{Problem 6}
+$\beta$ tells us that for a 1\% change in the average price of cigarettes we can expect to see a .3\% change in their sales.
+
+\subsection*{Problem 7}
+
+
+\subsection*{Problem 8}
+I begin by training a model on the whole data set and looking to see what elements are statistically significant.  This gives me an idea of what to make my base model out of.
+
+\begin{verbatim}
+Call:
+lm(formula = courseevaluation ~ ., data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.82802 -0.07752  0.01949  0.10759  0.53467 
+
+Coefficients: (1 not defined because of singularities)
+                    Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       -2.590e+05  4.706e+05  -0.550  0.58237    
+tenured           -2.345e-02  3.251e-02  -0.721  0.47126    
+profnumber         4.557e-04  5.212e-04   0.874  0.38250    
+minority          -5.702e-02  3.564e-02  -1.600  0.11045    
+age                3.651e-03  1.543e-03   2.366  0.01848 *  
+beautyf2upper      3.661e+04  2.895e+04   1.265  0.20669    
+beautyflowerdiv   -2.461e+04  4.209e+04  -0.585  0.55910    
+beautyfupperdiv    2.103e-01  1.511e-01   1.392  0.16472    
+beautym2upper     -4.851e+04  6.593e+04  -0.736  0.46226    
+beautymlowerdiv    1.848e+04  4.864e+04   0.380  0.70424    
+beautymupperdiv    7.557e+04  3.150e+04   2.399  0.01690 *  
+btystdave         -3.632e+04  9.304e+04  -0.390  0.69645    
+btystdf2u         -6.877e+04  6.360e+04  -1.081  0.28026    
+btystdfl           5.426e+04  8.438e+04   0.643  0.52060    
+btystdfu           7.962e+03  1.632e+04   0.488  0.62593    
+btystdm2u          8.821e+04  1.122e+05   0.786  0.43235    
+btystdml          -2.348e+04  7.988e+04  -0.294  0.76892    
+btystdmu          -1.566e+05  6.830e+04  -2.293  0.02237 *  
+class1            -2.145e-02  9.286e-02  -0.231  0.81740    
+class2             1.014e-01  1.346e-01   0.753  0.45172    
+class3            -1.213e-01  7.363e-02  -1.648  0.10022    
+class4            -6.729e-02  5.071e-02  -1.327  0.18530    
+class5             1.087e-01  9.545e-02   1.139  0.25531    
+class6            -4.252e-02  9.175e-02  -0.463  0.64328    
+class7            -1.310e-01  1.058e-01  -1.238  0.21638    
+class8             2.711e-01  1.365e-01   1.987  0.04762 *  
+class9            -3.772e-02  7.273e-02  -0.519  0.60426    
+class10            8.624e-02  9.420e-02   0.915  0.36049    
+class11           -1.358e-01  1.463e-01  -0.928  0.35394    
+class12           -2.774e-01  1.110e-01  -2.499  0.01287 *  
+class13           -7.218e-02  1.179e-01  -0.612  0.54090    
+class14            2.763e-01  1.156e-01   2.391  0.01729 *  
+class15           -1.641e-01  1.376e-01  -1.193  0.23369    
+class16            3.620e-02  1.032e-01   0.351  0.72582    
+class17            1.364e-01  7.756e-02   1.759  0.07941 .  
+class18            2.822e-01  1.008e-01   2.800  0.00536 ** 
+class19           -1.861e-01  8.865e-02  -2.099  0.03644 *  
+class20           -2.665e-03  9.905e-02  -0.027  0.97855    
+class21           -2.323e-02  6.807e-02  -0.341  0.73308    
+class22           -5.503e-02  7.575e-02  -0.726  0.46798    
+class23            8.993e-02  8.697e-02   1.034  0.30176    
+class24           -8.296e-02  1.122e-01  -0.739  0.46024    
+class25           -1.251e-01  1.111e-01  -1.127  0.26048    
+class26            1.922e-01  1.116e-01   1.722  0.08590 .  
+class27            2.960e-01  1.357e-01   2.182  0.02971 *  
+class28           -6.401e-02  1.111e-01  -0.576  0.56469    
+class29           -2.297e-01  1.380e-01  -1.664  0.09688 .  
+class30           -6.287e-02  8.616e-02  -0.730  0.46601    
+didevaluation     -1.271e-03  1.367e-03  -0.930  0.35283    
+female            -3.238e-02  2.848e-02  -1.137  0.25632    
+formal             2.614e-02  3.680e-02   0.710  0.47796    
+fulldept          -4.235e-03  4.083e-02  -0.104  0.91745    
+lower              6.739e-03  3.031e-02   0.222  0.82417    
+multipleclass             NA         NA      NA       NA    
+nonenglish        -1.550e-01  5.011e-02  -3.093  0.00212 ** 
+onecredit          7.193e-02  5.747e-02   1.251  0.21148    
+percentevaluating  1.687e-03  8.997e-04   1.875  0.06147 .  
+profevaluation     9.242e-01  2.001e-02  46.186  < 2e-16 ***
+students           7.974e-04  8.792e-04   0.907  0.36496    
+tenuretrack       -3.992e-03  3.580e-02  -0.111  0.91129    
+blkandwhite        1.106e-03  3.667e-02   0.030  0.97594    
+btystdvariance    -1.373e-03  9.674e-03  -0.142  0.88724    
+btystdavepos      -1.145e+04  8.874e+03  -1.291  0.19761    
+btystdaveneg      -1.145e+04  8.874e+03  -1.291  0.19761    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1839 on 400 degrees of freedom
+Multiple R-squared:  0.9049,	Adjusted R-squared:  0.8901 
+F-statistic: 61.38 on 62 and 400 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+We see right away that the following factors at least appear meaningful at the 5\% level.  [profevaluation, nonenglish, btystdmu, beautymupperdiv, age].  We can now train a model on this reduced set of features.
+
+\begin{verbatim}
+Call:
+lm(formula = courseevaluation ~ profevaluation + nonenglish + 
+    btystdmu + beautymupperdiv + age, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.92102 -0.10370  0.01617  0.12830  0.72921 
+
+Coefficients: (1 not defined because of singularities)
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)     -0.1210840  0.0872760  -1.387 0.166004    
+profevaluation   0.9469193  0.0168967  56.042  < 2e-16 ***
+nonenglish      -0.0978276  0.0378164  -2.587 0.009991 ** 
+btystdmu         0.0287699  0.0099357   2.896 0.003965 ** 
+beautymupperdiv         NA         NA      NA       NA    
+age              0.0036353  0.0009702   3.747 0.000202 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1926 on 458 degrees of freedom
+Multiple R-squared:  0.8805,	Adjusted R-squared:  0.8795 
+F-statistic:   844 on 4 and 458 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+We see immediately that beautymupperdiv is colinear with another feature so we drop it from the next model that we train.
+
+\begin{verbatim}
+Call:
+lm(formula = courseevaluation ~ profevaluation + nonenglish + 
+    btystdmu + age, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.92102 -0.10370  0.01617  0.12830  0.72921 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)    -0.1210840  0.0872760  -1.387 0.166004    
+profevaluation  0.9469193  0.0168967  56.042  < 2e-16 ***
+nonenglish     -0.0978276  0.0378164  -2.587 0.009991 ** 
+btystdmu        0.0287699  0.0099357   2.896 0.003965 ** 
+age             0.0036353  0.0009702   3.747 0.000202 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1926 on 458 degrees of freedom
+Multiple R-squared:  0.8805,	Adjusted R-squared:  0.8795 
+F-statistic:   844 on 4 and 458 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Now we have a model with only 4 features instead of 64, and only a 2\% drop in $R^2$.  Looking at the magnitude of the coefficients it is clear that the most valuable feature is profevaluation.  It seems like this is highly correlated with the courseevaluation.  Now let's look and see if log scaling might help in any cases.
+
+ \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH4/Gellman_CH04_P08_01.png}
+\end{figure}
+
+It appears that none of our variables contain any significant outliers which might be dealt with on the log axis.  I'm just going to z-scale the features to help with interpretability.
+
+\begin{verbatim}
+Call:
+lm(formula = courseeval ~ z.profeval + z.age + z.btystdmu + nonenglish)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.92102 -0.10370  0.01617  0.12830  0.72921 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  4.004188   0.009239 433.401  < 2e-16 ***
+z.profeval   0.514996   0.009190  56.042  < 2e-16 ***
+z.age        0.035636   0.009510   3.747 0.000202 ***
+z.btystdmu   0.027885   0.009630   2.896 0.003965 ** 
+nonenglish  -0.097828   0.037816  -2.587 0.009991 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1926 on 458 degrees of freedom
+Multiple R-squared:  0.8805,	Adjusted R-squared:  0.8795 
+F-statistic:   844 on 4 and 458 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+We can interpret the coefficients in the following way:
+\begin{enumerate}
+\item[-] (Intercept) The average courseevaluation for an english speaking professor of average age, beauty, and professor evaluation is 4.
+\item[-] (z.profeval)  For someone of average age, and beauty, who is a native english speaker we can expect that one standard deviation increase in the profeval score will results in .515 increase in the courseevaluation
+\item[-] (age)  For a professor with an average score and beauty who speaks english we can expect that one standard deviation change in age will result in .035 change in courseevaluation
+\item[-] (btystdmu) similar interpretation
+\item[-] (nonenglish) All else kept at average the non English speaking professors receive on average a score .097 points lower than their English speaking colleagues.
+\end{enumerate}
+
+
+
+
+
