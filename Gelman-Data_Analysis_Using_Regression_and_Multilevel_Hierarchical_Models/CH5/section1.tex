@@ -1,0 +1,307 @@
+
+\subsection*{Problem 1}
+
+\subsubsection*{(a-c)}
+
+I fit a number of models with different predictors.  I began with just 
+\begin{verbatim}
+fit.1 <- glm(vote ~ race, data=nes, family=binomial(link='logit'))
+display(fit.1)
+\end{verbatim}
+
+And found the deviance to be 44 659.  I then looked at adding gender which reduced  the deviance to 44619.  To check that deviance is behaving as I would expect I added black, and saw no change, because this feature is accounted for in race. I then added income which saw a huge drop to 39107.  Then age which droped it down to 37518.  Lastly I added parent\_party and saw the deviance fall to 11604.   I took this as my best model and examined the residuals
+
+\begin{verbatim}
+fit.1 <- glm(vote~race + age + income + gender + parent_party, data=nes, family=binomial(link="logit"))
+binnedplot(predict(fit.1, resid(fit.1, type='response'), main="Binned residual plot of best model")
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH5/Gellman_CH05_P01_01.png}
+\end{figure}
+
+As you can see the residuals differences appear to fall more or less within the confidence bounds.  This leads me to say that the model assumptions are at least in the ball park.  However, there is a little bit of heteroskedasticity to this plot.  This probably means that there is some factor that I'm missing which is affecting the voting habits.  After poking around a bit I found the feature ideo\_feel which flattens out the residual plot significantly.
+
+\begin{verbatim}
+fit.1 <- glm(vote~race + age + income + gender + parent_party + idea_feel, data=nes, family=binomial(link="logit"))
+binnedplot(predict(fit.1, resid(fit.1, type='response'), main="Binned residual plot of best model")
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH5/Gellman_CH05_P01_02.png}
+\end{figure}
+
+Lastly we need to interpret the coefficients of the model.  
+
+
+
+\subsection*{Problem 2}
+\begin{verbatim}
+library('ggplot2')
+library('gridExtra')
+x <- seq(-1000,1000) / 100
+y1 <- 1 / (1 + exp(-x)) 
+y2 <- 1 / (1 + exp(-(2 + x)))
+y3 <- 1 / (1 + exp(-2*x)) 
+y4 <- 1 / (1 + exp(-(2 + 2*x)))
+y5 <- 1 / (1 + exp(2*x)) 
+df <- data.frame(x, y1, y2, y3, y4, y5)
+p1 <- ggplot(df, aes(x=x, y=y1), group=rating) +
+      geom_line() +
+      ggtitle("logit^{-1}(2 + x)") 
+p2 <- ggplot(df, aes(x=x, y=y2), group=rating) +
+      geom_line() +
+      ggtitle("logit^{-1}(x)") 
+p3 <- ggplot(df, aes(x=x, y=y3), group=rating) +
+      geom_line() +
+      ggtitle("logit^{-1}(2x)") 
+p4 <- ggplot(df, aes(x=x, y=y4), group=rating) +
+      geom_line() +
+      ggtitle("logit^{-1}(2+2x)") 
+p5 <- ggplot(df, aes(x=x, y=y5), group=rating) +
+      geom_line() +
+      ggtitle("logit^{-1}(-2x)")
+
+grid.arrange(p1, p2, p3, p4, p5, ncol=3)
+\end{verbatim}
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH5/Gellman_CH05_P02_01.png}
+\end{figure}
+
+\subsection*{Problem 3}
+This is just some simple algebra:
+
+\begin{align*}
+y &= \frac{1}{1 + e^{-x}} \\
+y(1 + e^{-x}) &= 1 \\
+ye^{-x} &= 1 - y\\
+e^{-x} &= \frac{1 - y}{y} \\
+\frac{1}{e^x} &= \frac{1 - y}{y} \\
+e^x & = \frac{y}{1 - y}\\
+x &= \log \left(\frac{y}{1-y}\right) \\
+\alpha + \beta x &= \log \left(\frac{y}{1-y}\right) \\
+\alpha &= \log \left(\frac{.27}{1-.27}\right)  && x = 0\\
+\alpha &= -.995
+\end{align*}
+
+And solving for when $x = 6$ and $p = .88$
+
+\begin{align*}
+6\beta - .995 &= \log \left(\frac{.88}{1-.88}\right) \\
+\beta = 2.987
+\end{align*}
+\newpage
+\subsection*{Problem 5}
+\subsubsection*{(a)}
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.55\textwidth]{CH5/Gellman_CH05_P05_01.png}
+\end{figure}
+
+\subsubsection*{(b)}
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.5\textwidth]{CH5/Gellman_CH05_P05_02.png}
+\end{figure}
+
+\subsubsection*{(c)}
+\begin{verbatim}
+x <- seq(100, 10000) / 100
+samples <- rnorm(9901, 60, 15)
+fake <- rnorm(9901, 0, 1)
+y <- 1 / (1 + exp(24 - .4*x)) 
+df <- data.frame(x, y, samples, fake)
+df['prediction'] <- ((1 / (1 + exp(24 - .4 * df['samples']))) > .5) + 0
+
+fit.5 <- glm(prediction ~ x, data=df, family=binomial(link="logit"))
+display(fit.5)
+
+fit.5 <- glm(prediction ~ x + fake, data=df, family=binomial(link="logit"))
+display(fit.5)
+\end{verbatim}
+The deviance decreased by .1 between the two settings.  Adding noise can improve fit, but in this case it is super minor. 
+
+\subsection*{Problem 6}
+
+\subsection*{Problem 7}
+In order to create this poorly fitting example.  I sampled my predictions randomly from a uniform distribution.  This way the 1's and 0's would be randomly dispersed amongst the x values.  I find the the fit is terrible, though I don't think it's fair to make the statement that these data point are inconsistent with ANY logistic regression fit because it could be possible for a kernel to make these points linearly separable.
+
+\begin{verbatim}
+x <- seq(1, 20)
+y <- (runif(20) > .5) + 0
+fit.7 <- glm(y ~ x, family=binomial(link="logit"))
+display(fit.7)
+
+glm(formula = y ~ x, family = binomial(link = "logit"))
+            coef.est coef.se
+(Intercept)  1.03     0.99  
+x           -0.08     0.08  
+---
+  n = 20, k = 2
+  residual deviance = 26.6, null deviance = 27.5 (difference = 1.0)
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH5/Gellman_CH05_P07_01.png}
+\end{figure}
+
+It is clear from the standard error of the coefficient for x that it is not statistically significant indicating that x is a poor predictor of y.  You can also see that the confidence intervals are large indicating a large degree of uncertainty.  You can also notice how the slope of the line is very shallow.  This leads to a large degree of uncertainty over the whole range of known values.
+
+
+\subsection*{Problem 8}
+
+
+\subsection*{Problem 9}
+
+\begin{verbatim}
+fit.9 <- glm(switch ~ log(dist), data=df,family=binomial(link="logit"))
+display(fit.9)
+
+ggplot(data=df, aes(x=dist, y=switch)) + 
+  stat_smooth(method="glm", method.args = list(family = "binomial")) + 
+  geom_point(data=df, aes(x=jitter(dist, .2), y=jitter(switch, .2))) + 
+  ggtitle("Regression on log(dist)")
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH5/Gellman_CH05_P09_01.png}
+\end{figure}
+
+\begin{verbatim}
+# (c)
+par(mfrow=c(1,2))
+binnedplot(predict(fit.9), resid(fit.9, type='response'), main="Binned residual plot of switch ~ log(dist)")
+plot(log(df$dist), resid(fit.9), ylab='Residuals', main='Residual plot of switch ~ log(dist)')
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.95\textwidth]{CH5/Gellman_CH05_P09_02.png}
+\end{figure}
+
+\begin{verbatim}
+# (d)
+fit.9 <- glm(switch ~ dist, data=df,family=binomial(link="logit"))
+new_df <- data.frame(dist = df$dist)
+df$predict <- predict(fit.9, newdata=new_df)
+error.rate <- mean((df$predict > .5 & df$switch == 0) | (df$predict <=.5 & df$switch ==1))
+
+.542053
+\end{verbatim}
+
+
+\subsection*{Problem 10}
+\subsubsection*{(a)}
+\begin{verbatim}
+df$log_ars <- log(df$arsenic)
+fit.10 <- glm(switch ~ dist + log_ars + log_ars:dist, data=df,family=binomial(link="logit"))
+display(fit.10)
+
+             coef.est coef.se
+(Intercept)   0.49     0.07  
+dist         -0.01     0.00  
+log_ars       0.98     0.11  
+dist:log_ars  0.00     0.00  
+---
+  n = 3020, k = 4
+  residual deviance = 3896.8, null deviance = 4118.1 (difference = 221.3)
+\end{verbatim}
+
+\begin{enumerate}
+\item (Intercept) indicates that the probability of switching wells for someone with average arsenic levels living an average distance from a clean well would be $\frac{1}{1 + e^{-.49 + .01 \bar{dist} + .98\bar{arsenic}}} = .577$.  
+\item (dist) We can evaluate the effect of distance by evaluating the difference in probabilities of two different predictions holding all else constant.  I set the value of log\_arsenic to its mean and look at the difference in probability for someone who is 48 meters from the nearest clean well and someone who is 49 meters to the nearest clean well.  I find that increasing the distance decreases the likelihood of switching by .2\%.
+\item (log\_ars)  Lastly we repeat the above analysis but holding distance at it's mean instead and look at the difference between between a log\_arsenic of .3 and .4.  I find that a log increase of .1 results in a 2\% increase in the probability of switching wells.
+\end{enumerate}
+
+\subsubsection{(b)}
+\begin{verbatim}
+
+# Plot Distance with fixed arsenic
+x <- seq(0, 35000) / 100
+new_df <- data.frame(dist=x, log_ars=1)
+y1 <- predict(fit.10, newdata=new_df, type='response')
+new_df <- data.frame(dist=x, log_ars=.5)
+y2 <- predict(fit.10, newdata=new_df, type='response')
+graph_df <- data.frame(x, y1, y2)
+p1 <- ggplot(graph_df, aes(x=x), group=rating) +
+      geom_line(aes(y = y1, colour = "log(arsenic)=1 ")) +
+      geom_line(aes(y = y2, colour = "log(arsenic)=.5")) +
+      ggtitle("Distance") +
+      geom_point(data=df, aes(x=jitter(dist, .2), y=jitter(switch, .2)))
+p1
+
+# Plot Arsenic with fixed distance
+x <- seq(-100, 300) / 100
+new_df <- data.frame(dist=0, log_ars=x)
+y1 <- predict(fit.10, newdata=new_df, type='response')
+new_df <- data.frame(dist=50, log_ars=x)
+y2 <- predict(fit.10, newdata=new_df, type='response')
+graph_df <- data.frame(x, y1, y2)
+p2 <- ggplot(graph_df, aes(x=x), group=rating) +
+      geom_line(aes(y = y1, colour = "dist=0")) +
+      geom_line(aes(y = y2, colour = "dist=50")) +
+      ggtitle("Log(Arsenic)") +
+      geom_point(data=df, aes(x=jitter(log_ars, .2), y=jitter(switch, .2)))
+p2
+
+
+grid.arrange(p1, p2, ncol=2)
+\end{verbatim}
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.95\textwidth]{CH5/Gellman_CH05_P10_01.png}
+\end{figure}
+
+\subsubsection*{(c)}
+
+\textbf{(i)}
+\begin{verbatim}
+b <- coef(fit.10)
+hi <- 100
+low <- 0
+delta <- invlogit(b[1] + 
+                  b[2] * hi + 
+                  b[3] * df$log_ars + 
+                  b[4] * df$log_ars * hi) -
+         invlogit(b[1] + 
+                  b[2] * low +
+                  b[3] * df$log_ars +
+                  b[4] * df$log_ars * low)
+mean(delta)
+\end{verbatim}
+This yields -.211.  This means that individuals who are 100 meters from the nearest safe well holding arsenic levels constant are  21\% less likely to switch.
+
+\textbf{(ii)}
+\begin{verbatim}
+hi <- 200
+low <- 100
+delta <- invlogit(b[1] + 
+                  b[2] * hi + 
+                  b[3] * df$log_ars + 
+                  b[4] * df$log_ars * hi) -
+         invlogit(b[1] + 
+                  b[2] * low +
+                  b[3] * df$log_ars +
+                  b[4] * df$log_ars * low)
+mean(delta)
+\end{verbatim}
+This yields -.209.  which is roughly the same as before.  This means that increasing the distance maintains a fairly steady effect on switching.
+
+All remaining analysis is similar and is omitted.
+
+
+\subsection*{Problem 11}
+Some of the predictors in 1968 are colinear.
+
+
+
+
+
+
+
