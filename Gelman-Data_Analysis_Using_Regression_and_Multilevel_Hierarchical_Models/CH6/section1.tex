@@ -1,0 +1,161 @@
+
+\subsection*{Problem 1}
+
+\subsubsection*{(a)}
+\begin{verbatim}
+rb <- read.dta('risky_behaviors.dta')
+
+summary(rb)
+colnames(rb)
+
+# Make factors out of the features
+rb$fupacts <- round(rb$fupacts)
+rb$bs_hiv <- factor(rb$bs_hiv)
+rb$couples <- factor(rb$couples)
+
+# Fit Regression on all predictors
+fit.1 <- glm(fupacts ~ women_alone, data=rb, family=poisson)
+summary(fit.1)
+
+# Plot the standardized residuals
+y_hat <- predict(fit.1, type='response')
+z <- (rb$fupacts - y_hat) / sd(y_hat)
+
+df <- data.frame(y=z, x=y_hat)
+p1 <- ggplot(df, aes(x=x, y=y)) +
+      stat_function(fun=function(x) 2) +
+      stat_function(fun=function(x) -2) +
+      ggtitle("Standardized Residuals of fupacts ~ women_alone") + 
+      labs(x="Predict Value") + 
+      labs(y="Standardized Residual") +
+      geom_point(data=df, aes(x=x, y=y))
+p1
+
+# Calculate the Overdisperssion Directly
+n <- dim(rb)[1]
+k <- 2
+sum(z^2)
+n-k
+pchisq(sum(z^2), n - k)
+\end{verbatim}
+
+It is certainly better than the null model, however the fit is pretty terrible.  As to overdispersion, if we plot the standardized residuals versus predicted value we see that there are a significant number of points which appear outside of the 95\% confidence bounds indicating that there is overdispersion.  We can also estimate the overdispersion directly by calculating:
+\begin{align*}
+\frac{1}{n - k} \sum_{i=1}^nz_i^2
+&= 36187
+\end{align*}
+Where we would expect to see 432.  So it looks like the data are overdispersed by a factor of 83.
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH6/Gellman_CH06_P01_01.png}
+\end{figure}
+
+
+\subsubsection*{(b)}
+
+Creating a model on all predictors significantly reduces the deviance.  However, there is still overdispersion present as you can see in the plot for the full model.  Also, by calculating the overdispersion directly we see that the sum of squares of the standardized residuals is 985 and we would expect to see 428 which indicates that we are overdispersed by a factor of 2, a significant reduction from our previous model.  We can perform a Chisquare test and see that this conclusion is statistically significant as well.  The code is almost identical to part a so it is omitted. 
+
+  \begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.75\textwidth]{CH6/Gellman_CH06_P01_02.png}
+\end{figure}
+
+
+\subsection*{(c)}
+\begin{verbatim}
+# (c)
+# Fit Regression on all predictors
+fit.1 <- glm(fupacts ~ ., data=rb, family=quasipoisson)
+summary(fit.1)
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)     2.8957952  0.1271206  22.780  < 2e-16 ***
+sexman         -0.1086694  0.1299838  -0.836 0.403609    
+couples1       -0.4099761  0.1546315  -2.651 0.008316 ** 
+women_alone    -0.6622159  0.1692369  -3.913 0.000106 ***
+bs_hivpositive -0.4383170  0.1937994  -2.262 0.024217 *  
+bupacts         0.0107789  0.0009521  11.321  < 2e-16 ***
+\end{verbatim}
+The model seems to indicate that intervention has a positive effect.  We can see that the coefficients for both couples1 and women\_alone are negative.  This indicates that the training reduces the numebr of unprotected sexual encounters.
+
+\subsection*{(d)}
+People in the same couple will behave similarly.  There will be a great deal of inter couple correlation.  
+
+
+\subsection*{Problem 2}
+\begin{verbatim}
+df <- read.dta('nes5200_processed_voters_realideo.dta')
+
+df$partyid3 <- factor(df$partyid3, labels=c('democrat', 'independent', 
+                                            'republican', 'apolitical'))
+df$ideo <- factor(df$ideo)
+df$race <- factor(df$race)
+
+fit.2 <- polr(partyid3 ~ ideo + race + age, data=df, Hess=TRUE)
+summary(fit.2)
+
+Coefficients:
+                                          Value Std. Error  t value
+ideo3. moderate ('middle of the road')  1.10631    0.05159  21.4435
+ideo5. conservative                     1.99595    0.04423  45.1257
+race2. black                           -2.06246    0.07197 -28.6570
+race3. asian                            0.18405    0.14509   1.2686
+race4. native american                 -0.37750    0.10573  -3.5706
+race5. hispanic                        -0.89820    0.07559 -11.8824
+race7. other                           -0.40448    0.48588  -0.8325
+age                                    -0.01183    0.00103 -11.4849
+
+Intercepts:
+                       Value    Std. Error t value 
+democrat|independent     0.4374   0.0577     7.5797
+independent|republican   0.8634   0.0581    14.8620
+republican|apolitical    6.3530   0.1401    45.3391
+
+Residual Deviance: 24444.21 
+AIC: 24466.21 
+\end{verbatim}
+
+
+
+\subsection*{Problem 3}
+\begin{verbatim}
+df <- read.table("wells.txt")
+summary(df)
+
+fit.3.probit <- glm(switch ~ dist, data=df, family=binomial(link='probit'))
+fit.3.logit <- glm(switch ~ dist, data=df, family=binomial(link='logit'))
+
+coef(fit.3.probit) * 1.6
+coef(fit.3.logit)
+\end{verbatim}
+$\beta_{probit scaled} =  [0.604492589, -0.006198623 ]$ and $\beta_{logit} = [ 0.605959360, -0.006218819 ]$
+
+\subsection*{Problem 4}
+
+To generate a set of data where the probit and logit differed.  I created a set of data where everything above a certain threshold was one and everything below was zero.  The idea was to exploit the difference in the tail of the distributions.  
+
+\begin{verbatim}
+x <- runif(1000, 0, 1)
+y <- (x > .8) + 0
+
+fit.4.probit <- glm(y ~ x, family=binomial(link='probit'))
+fit.4.logit <- glm(y ~ x, family=binomial(link='logit'))
+summary(fit.4.probit)
+summary(fit.4.logit)
+coef(fit.4.probit) * 1.6
+coef(fit.4.logit)
+\end{verbatim}
+
+The fits are similar, however the logit does an order of magnitude better.  The coefficients are also very different even when scaled.
+
+\subsection*{Problem 5}
+
+
+
+
+
+
+
+
