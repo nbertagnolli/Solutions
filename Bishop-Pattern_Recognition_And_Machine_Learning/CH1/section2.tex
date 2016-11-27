@@ -30,9 +30,102 @@ The probability that observing an orange came from the green box can be solved u
 $\cov{X,Y} = \Exp{X,Y} - \Exp{X}\Exp{Y}$ But because $X \perp Y \Rightarrow \Exp{X,Y} = \Exp{X}\Exp{Y} \Rightarrow \cov{X,Y} = 0$
 
 \Large\textbf{Problem 7}
+\begin{align*}
+ I^2 &= \int_{-\infty}^\infty\int_{-\infty}^\infty \exp\left(-\frac{1}{2\sigma^2}x^2-\frac{1}{2\sigma^2}y^2\right)dxdy\\
+ &= \int_{-\infty}^\infty\int_{-\infty}^\infty \exp\left(-\frac{1}{2\sigma^2}(x^2 + y^2)\right)dxdy\\\\
+ &= \int_{0}^\infty\int_{0}^{2\pi} \exp\left(-\frac{1}{2\sigma^2}\left[r^2\cos^2(\theta) + r^2\sin^2(\theta)\right]\right)rd\theta dr\\
+ &= \int_{0}^\infty\int_{0}^{2\pi} \exp\left(-\frac{r^2}{2\sigma^2}\right)rd\theta dr\\
+ &=2\pi\int_{0}^\infty \exp\left(-\frac{r^2}{2\sigma^2}\right)rdr\\
+ &= 2\pi\int_{0}^\infty \exp\left(-\frac{u}{2\sigma^2}\right)\frac{1}{2}  du\\
+ &= -2\pi\sigma^2 \exp\left(-\frac{u}{2\sigma^2}\right) |_0^{\infty}\\
+ &= 2\pi\sigma^2
+\end{align*}
+
+Now we just need to show that this normalizes the Gaussian.  Take $y = x-\mu$ then
+
+\begin{align*}
+\mathcal{N}(x|\mu, \sigma^2) &= \int_{-\infty}^\infty\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)dx\\
+&= \int_{-\infty}^\infty\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{1}{2\sigma^2}y^2\right)dy\\
+\end{align*}
 
 \Large\textbf{Problem 8}
+\begin{align*}
+\Exp{x} &= \int_{-\infty}^\infty \mathcal{N}(x|\mu, \sigma) x dx\\
+&= \int_{-\infty}^\infty\frac{x}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)dx\\
+&= \frac{1}{\sqrt{2\pi\sigma^2}}\int_{-\infty}^\infty(y+\mu)\exp\left(-\frac{1}{2\sigma^2}y^2\right)dy  && y = x - \mu\\
+\end{align*}
+
+Now split this into the sum of two integrals.  The second integral has the form:
+
+\[\frac{1}{\sqrt{2\pi\sigma^2}} \int_{-\infty}^\infty\mu\exp\left(-\frac{1}{2\sigma^2}y^2\right)dy\]
+
+Which is just a normalized Gaussian times $\mu$ so this is just $\mu$.  Now since we are trying to prove that his equals $\mu$ I'm fairly confident that the left integral will go to zero. Let's try and prove this.
+
+\[\frac{1}{\sqrt{2\pi\sigma^2}} \int_{-\infty}^\infty y\exp\left(-\frac{1}{2\sigma^2}y^2\right)dy\]
+
+Well if we visualize this function it looks odd which would imply that the integral from $[-\infty, \infty]$ is 0.  Let's prove that it is odd quickly.  We want to show that $f(x) = -f(-x)$ where $f(x) = y\exp\left(-\frac{1}{2\sigma^2}y^2\right)$
+
+\begin{align*}
+-(-y)\exp\left(-\frac{1}{2\sigma^2}(-y)^2\right) &= y\exp\left(-\frac{1}{2\sigma^2}y^2\right)
+\end{align*}
+
+Thus or integral in question is odd and evaluates to 0 yielding $\mu$ as the desired result.
+
+Next we need to show that:
+
+\begin{align*}
+\Exp{x^2} &=  \int_{-\infty}^\infty \mathcal{N}(x|\mu, \sigma) x^2 dx = \mu^2 + \sigma^2 \\
+\end{align*}
+
+To do this differentiate both sides by $\sigma^2$ as follows:
+
+\begin{align*}
+\frac{1}{\sqrt{2\pi\sigma^2}}\int_{-\infty}^\infty\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)dx &= 1\\
+\int_{-\infty}^\infty\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)dx &= \sqrt{2\pi\sigma^2}\\
+\int_{-\infty}^\infty\frac{d}{d\sigma^2}\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)dx &= \frac{d}{d\sigma^2}\sqrt{2\pi\sigma^2}\\
+\frac{1}{2\sigma^4}\int_{-\infty}^\infty\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)(x-\mu)^2dx &= \frac{\pi}{\sqrt{(2\pi\sigma^2)}}\\
+\int_{-\infty}^\infty\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)(x-\mu)^2dx &= \frac{2\pi\sigma^4}{\sqrt{(2\pi\sigma^2)}}\\
+\frac{1}{\sqrt{2\pi\sigma^2}}\int_{-\infty}^\infty\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)(x-\mu)^2dx &= \sigma^2\\
+\var{x} &= \sigma^2
+\end{align*}
+
+The left hand side of this equation is just the definition of variance.  Now to complete the proof of (1.50) just use the alternate formulation of variance:
+
+\begin{align*}
+\Exp{(x - \mu)^2} &= \Exp{x^2} - \Exp{x}^2\\
+&=  \Exp{x^2} - \mu^2  && \text{By part 1}\\
+\sigma^2 &= \Exp{x^2} - \mu^2  && \text{By above}\\
+\Exp{x^2} &= \sigma^2 + \mu^2
+\end{align*}
 
 \Large\textbf{Problem 9}
+\begin{align*}
+\mathcal{N}(x|\mu, \sigma^2) &= \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2\right)\\
+\frac{d\mathcal{N}(x|\mu, \sigma^2)}{dx} &= -\frac{1}{\sigma^2}\mathcal{N}(x|\mu, \sigma^2)(x-\mu)\\
+0 &= \mathcal{N}(x|\mu, \sigma^2)(x-\mu)
+\end{align*}
+
+But since $\mathcal{N}(x|\mu, \sigma^2)(x-\mu) > 0$ the only term that matters is $(x-\mu)$, which goes to 0 at $x=\mu$
+
+The proof for the multivariate case is almost identical and is omitted
+
 
 \Large\textbf{Problem 10}
+\begin{align*}
+  \log p(\x|\mu, \sigma^2) &= -\frac{1}{\sqrt{2\pi\sigma^2}}\sum_{n=1}^N(x_n-\mu)^2 - \frac{N}{2}\log\sigma^2 - \frac{N}{2}\log(2\pi)\\
+  \frac{d\log p(\x|\mu, \sigma^2)}{d\mu} &= -\frac{1}{\sqrt{\pi\sigma^2}}\sum_{n=1}^N(x_n-\mu)\\
+  0 &= \sum_{n=1}^N(x_n-\mu)\\
+  &= \sum_{n=1}^Nx_n- \sum_{n=1}^N\mu\\
+  \mu &= \sum_{n=1}^Nx_n
+\end{align*}
+
+
+\Large\textbf{Problem 11}
+
+
+
+
+
+
+
+
