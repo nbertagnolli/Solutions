@@ -122,10 +122,120 @@ The proof for the multivariate case is almost identical and is omitted
 
 \Large\textbf{Problem 11}
 
+Just take the derivative with respect to $\mu$ of our function:
+
+\[\ln (x | \mu, \sigma^2) = -\frac{1}{2\sigma^2} \sum_{n=1}^N (x_n - \mu)^2 - \frac{N}{2 }\ln \sigma^2 - \frac{N}{2}\ln(2\pi)\]
+
+\begin{align*}
+\frac{d}{d\mu} \ln (x | \mu, \sigma^2) &= \frac{1}{\sigma^2} \sum_{n=1}^N x_n - \mu\\
+0 &= \sum_{n=1}^N x_n - \mu\\
+\sum_{n=1}^N \mu&= \sum_{n=1}^N x_n\\
+N\mu &=\sum_{n=1}^N x_n\\
+\mu &= \frac{1}{N}\sum_{n=1}^N x_n
+\end{align*}
+
+Now repeat the same for $\sigma^2$
+
+\begin{align*}
+\frac{d}{d\mu} \ln (x | \mu, \sigma^2) &=\frac{1}{2\sigma^4} \sum_{n=1}^N( x_n - \mu)^2 - \frac{N}{2\sigma^2}\\
+0 &= \frac{1}{2\sigma^4} \sum_{n=1}^N( x_n - \mu)^2 - \frac{N}{2\sigma^2}\\
+\frac{N}{2\sigma^2} &= \frac{1}{2\sigma^4} \sum_{n=1}^N( x_n - \mu)^2\\
+\sigma^2&= \frac{1}{N} \sum_{n=1}^N( x_n - \mu)^2\\
+\end{align*}
 
 
+\Large\textbf{Problem 17}
+
+The gamma function is defined as:
+
+\begin{align*}
+\Gamma(x) &= \int_0^\infty u^{x-1}e^{-u}du
+\end{align*}
+
+We use integration by parts with the following substitutions
+
+\begin{align*}
+u &= u^{x-1}  & v &= -e^{-u}\\
+du &= (x-1)u^{x-2}du  & dv &=  e^{-u}du
+\end{align*}
+
+By integration by parts we have:
+
+\begin{align*}
+\Gamma(x) &= -u^{x-1}e^{-u}|_0^\infty + (x-1)\int_0^\infty u^{x-2}e^{-u}du\\
+&=  (x-1)\int_0^\infty u^{x-2}e^{-u}du\\
+&= (x-1)\Gamma(x-1)\\
+&= z \Gamma(z) && z = x+1
+\end{align*}
+
+Now see that $\Gamma(1) = 1$
+
+\begin{align*}
+\Gamma(1) &= \int_0^\infty u^{0}e^{-u}du\\
+&=  \int_0^\infty e^{-u}du\\
+&= -e^{-u}|_0^\infty\\
+&= 1
+\end{align*}
+
+To show that for all $x \in \mathbb{Z}^+$ $\Gamma(x + 1) = x!$ we use an inductive argument.  Our base case is $\Gamma(1) = 1$  which we have already done.  Now let's assume that our inductive hypothesis is true and $\Gamma(x + 1) = x!$.  Then $\Gamma(x + 2) = (x+1)\Gamma(x+1) = (x + 1)x!$ and we are done.
 
 
+\Large\textbf{Problem 18}
+
+We want to solve for $S_D$ the surface area of a $D$ dimensional sphere. 
+
+\[\prod_{i=1}^D \int_{-\infty}^\infty e^{-x_i^2} = S_D \int_0^\infty e^{-r^2}r^{D-1}dr\]
+
+Let's solve the left hand side first.  From problem 7 above we know that
+
+\[ \int_{-\infty}^\infty e^{-\frac{1}{2\sigma^2}x^2} = \sqrt{2\pi \sigma^2}\]
+
+By setting $\sigma^2 = \frac{1}{2}$ we get that
+
+\begin{align*}
+\prod_{i=1}^D \int_{-\infty}^\infty e^{-x^2} &= \prod_{i=1}^D\sqrt{\pi}\\
+&= \pi^{\frac{D}{2}}
+\end{align*}
+
+Now let's look at the right hand side of the equation.  We can tease this function into the Gamma function by making the substitution $u = r^2$  which implies that $dr = \frac{1}{2}u^{-1/2}$.  With this insight we see that:
+
+\begin{align*}
+\int_0^\infty e^{-r^2}r^{D-1}dr &= \frac{1}{2}\int_0^\infty e^{-u}u^{\frac{D}{2}-1}du\\
+&= \frac{1}{2} \Gamma(D/2)
+\end{align*}
+
+Now just use simple algebra:
+
+\begin{align*}
+\pi^{\frac{D}{2}} &= S_D \frac{1}{2} \Gamma(D/2)\\
+S_D &= \frac{2\pi^{D/2}}{\Gamma(D/2)}
+\end{align*}.
+
+Next integrate the surface area with respect to the radius in order to get the equation for volume:
+
+\begin{align*}
+V_D &= S_D\int_0^1r^{D-1}dr\\
+&= S_D \left.\frac{r}{D}\right|_0^1\\
+&= \frac{S_D}{D}
+\end{align*}
+
+Now to derive some common known volumes.  For D =2:
+
+\begin{align*}
+\frac{2\pi^{D/2}}{D\Gamma(D/2)} &= \frac{2\pi}{2\Gamma(1)} \\
+&= \pi
+\end{align*}
+
+For D=3:
+
+\begin{align*}
+\frac{2\pi^{D/2}}{D\Gamma(D/2)} &= \frac{2\pi^{3/2}}{3\Gamma(3/2)} \\
+&= \frac{2\pi^{3/2}}{3\frac{\sqrt{\pi}}{2}} \\
+&= \frac{4\pi}{3}
+\end{align*}
+
+
+\Large\textbf{Problem 19}
 
 
 
