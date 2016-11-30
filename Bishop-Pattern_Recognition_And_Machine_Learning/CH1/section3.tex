@@ -1,0 +1,130 @@
+\Large\textbf{Problem 17}
+
+The gamma function is defined as:
+
+\begin{align*}
+\Gamma(x) &= \int_0^\infty u^{x-1}e^{-u}du
+\end{align*}
+
+We use integration by parts with the following substitutions
+
+\begin{align*}
+u &= u^{x-1}  & v &= -e^{-u}\\
+du &= (x-1)u^{x-2}du  & dv &=  e^{-u}du
+\end{align*}
+
+By integration by parts we have:
+
+\begin{align*}
+\Gamma(x) &= -u^{x-1}e^{-u}|_0^\infty + (x-1)\int_0^\infty u^{x-2}e^{-u}du\\
+&=  (x-1)\int_0^\infty u^{x-2}e^{-u}du\\
+&= (x-1)\Gamma(x-1)\\
+&= z \Gamma(z) && z = x+1
+\end{align*}
+
+Now see that $\Gamma(1) = 1$
+
+\begin{align*}
+\Gamma(1) &= \int_0^\infty u^{0}e^{-u}du\\
+&=  \int_0^\infty e^{-u}du\\
+&= -e^{-u}|_0^\infty\\
+&= 1
+\end{align*}
+
+To show that for all $x \in \mathbb{Z}^+$ $\Gamma(x + 1) = x!$ we use an inductive argument.  Our base case is $\Gamma(1) = 1$  which we have already done.  Now let's assume that our inductive hypothesis is true and $\Gamma(x + 1) = x!$.  Then $\Gamma(x + 2) = (x+1)\Gamma(x+1) = (x + 1)x!$ and we are done.
+
+
+\Large\textbf{Problem 18}
+
+We want to solve for $S_D$ the surface area of a $D$ dimensional sphere. 
+
+\[\prod_{i=1}^D \int_{-\infty}^\infty e^{-x_i^2} = S_D \int_0^\infty e^{-r^2}r^{D-1}dr\]
+
+Let's solve the left hand side first.  From problem 7 above we know that
+
+\[ \int_{-\infty}^\infty e^{-\frac{1}{2\sigma^2}x^2} = \sqrt{2\pi \sigma^2}\]
+
+By setting $\sigma^2 = \frac{1}{2}$ we get that
+
+\begin{align*}
+\prod_{i=1}^D \int_{-\infty}^\infty e^{-x^2} &= \prod_{i=1}^D\sqrt{\pi}\\
+&= \pi^{\frac{D}{2}}
+\end{align*}
+
+Now let's look at the right hand side of the equation.  We can tease this function into the Gamma function by making the substitution $u = r^2$  which implies that $dr = \frac{1}{2}u^{-1/2}$.  With this insight we see that:
+
+\begin{align*}
+\int_0^\infty e^{-r^2}r^{D-1}dr &= \frac{1}{2}\int_0^\infty e^{-u}u^{\frac{D}{2}-1}du\\
+&= \frac{1}{2} \Gamma(D/2)
+\end{align*}
+
+Now just use simple algebra:
+
+\begin{align*}
+\pi^{\frac{D}{2}} &= S_D \frac{1}{2} \Gamma(D/2)\\
+S_D &= \frac{2\pi^{D/2}}{\Gamma(D/2)}
+\end{align*}.
+
+Next integrate the surface area with respect to the radius in order to get the equation for volume:
+
+\begin{align*}
+V_D &= S_D\int_0^1r^{D-1}dr\\
+&= S_D \left.\frac{r}{D}\right|_0^1\\
+&= \frac{S_D}{D}
+\end{align*}
+
+Now to derive some common known volumes.  For D =2:
+
+\begin{align*}
+\frac{2\pi^{D/2}}{D\Gamma(D/2)} &= \frac{2\pi}{2\Gamma(1)} \\
+&= \pi
+\end{align*}
+
+For D=3:
+
+\begin{align*}
+\frac{2\pi^{D/2}}{D\Gamma(D/2)} &= \frac{2\pi^{3/2}}{3\Gamma(3/2)} \\
+&= \frac{2\pi^{3/2}}{3\frac{\sqrt{\pi}}{2}} \\
+&= \frac{4\pi}{3}
+\end{align*}
+
+
+\Large\textbf{Problem 19}
+
+From problem 18 we know what the volume of a hypersphere is.  The volume of a D-dimensional cube is simply $l^D$ where $l$ is the length of a side.  In our case this is $2a$ so the ratio is:
+
+\begin{align*}
+\frac{\text{Volume Sphere}}{\text{Volume Cube}} &= \frac{2\pi^{D/2}a^D}{(2a)^DD\Gamma(D/2)}\\
+&= \frac{\pi^{D/2}}{2^{D-1}D\Gamma(D/2)}
+\end{align*}
+
+To show that the ratio goes to zero I'm going to eschew Stirling's formula because there is a much easier way to show this....  Begin by noticing that the above equation is always positive.  Therefore we know that $0 \leq \frac{\pi^{D/2}}{2^{D-1}D\Gamma(D/2)}$ $\forall D \in \mathbb{Z}$.  Now let's replace the gamma function by the factorial function because they are identical for integer operands.  I will also drop the $D$ and $2^{D-1}$ from the bottom which increases the total value of the expression giving me:
+
+\begin{align*}
+0 &\leq \frac{\pi^{D/2}}{2^{D-1}D\Gamma(D/2)} \leq \frac{\pi^{D/2}}{(D/2)!}\\
+0 &\leq \frac{\pi^{x}}{x2^{2x}\Gamma(x)} \leq \frac{\pi^{x}}{x!}\\
+\end{align*}
+
+Now we just need to show that $\lim_{x\rightarrow \infty}\frac{\pi^x}{x!} = 0$.  Which is easy!  Notice that:
+
+\begin{align*}
+0 &< \frac{\pi^x}{x!} \\
+\frac{\pi^x}{x!} &= \frac{\pi	}{1}\cdot \frac{\pi}{2} \cdot \frac{\pi}{3} \cdot ... \cdot \frac{\pi}{x}\\
+&< \frac{\pi	}{1}\cdot \frac{\pi}{2} \cdot \frac{\pi}{3} \cdot \frac{\pi}{4} \cdot \frac{\pi}{4} \cdot ... \cdot \frac{\pi}{4} \\
+&= \frac{\pi}{6}\left(\frac{\pi}{4}\right)^{n-3}
+\end{align*}
+
+Now we know that:
+
+\begin{align*}
+\lim_{x\rightarrow \infty} \left(\frac{\pi}{4}\right)^{n-3} &= 0
+\end{align*}
+
+Therefore by the squeeze theorem so does $\frac{\pi^{D/2}}{2^{D-1}D\Gamma(D/2)}$ and we are done.
+
+
+To show that the ratio of the distance from the center to a corner to the distance from the center to a side is $\sqrt{D}$ start by centering the cube at the origin.  Then we know that one corner will be at $(a, a,...,a)$ and the distance to that corner will be $a\sqrt{D}$ in euclidean space.  Now look at the distance to a side.  A side will be at the point $(a, 0, 0, ....)$ which will be distance $a$ from the origin in Euclidean space so the ratio is $\sqrt{D}$ 
+
+
+
+
