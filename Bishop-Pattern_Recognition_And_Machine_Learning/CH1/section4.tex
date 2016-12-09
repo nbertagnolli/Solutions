@@ -1,0 +1,73 @@
+\Large\textbf{Problem 21}
+
+First we prove that given two non negative numbers $a, b$ and $a \leq b$ $\Rightarrow$ $a \leq \sqrt{ab}$:
+
+\begin{align*}
+  a &\leq ab\\
+  a^2 &\leq ab\\
+  |a| &\leq \sqrt{ab} \\
+  a&\leq \sqrt{ab}
+\end{align*}  
+
+the probability of a mistake is the probability of making an error over all classification sub regions.
+\begin{align*}
+  p(mistake) &= \int_{R_1} p(x, C_1)dx + \int_{R_2} p(x, C_2)dx \\
+\end{align*}
+
+We know that over $R_1$ $p(C_1 | x) \geq p(C_2 | x)$.  By our first proof we know that:
+
+\begin{align*}
+p(C_2 | x) &\leq \sqrt{p(C_1 | x)p(C_2 | x)} \\
+p(C_2 | x)p(x) &\leq p(x) \sqrt{p(C_1 | x)p(C_2 | x)} \\
+p(x, C_2) &\leq \sqrt{p(C_1 | x)p(C_2 | x)p(x)^2} \\
+&\leq \sqrt{p(x, C_1)p(x, C_2)} \\
+\end{align*}
+
+By an identical argument over $R_2$ $p(C_1 | x) \leq p(C_2 | x)$ and \[p(x, C_1) \leq \sqrt{p(C_1 | x)p(C_2 | x)p(x)^2}\]
+
+substituting these into the definition of a mistake probability:
+
+\begin{align*}
+p(mistake) &\leq \int_{R_1} \sqrt{p(x, C_1)p(x, C_2)}dx + \int_{R_2} \sqrt{p(x, C_1)p(x, C_2)}dx\\
+&\leq \int \sqrt{p(x, C_1)p(x, C_2)}dx
+\end{align*}
+
+\newpage
+\Large\textbf{Problem 22}
+
+The loss matrix $L_{kj} = 1 - I_{kj}$ can be visualized as:
+
+\begin{align*}
+L &= \begin{bmatrix}
+0 & 1 & 1 & \cdots & 1\\
+1 & 0 & 1 & \cdots & 1 \\
+\vdots & \ddots & \ddots & \ddots &\vdots\\
+\vdots & \ddots & \ddots & \ddots & 1\\
+1 & \cdots & \cdots & 1 & 0
+\end{bmatrix} 
+\end{align*}
+
+This is interpreted as there is no penalty for choosing the correct class, however any type of misclassification is penalized the same.  This means that we just want to choose the class with the largest posterior probability because it will be the most likely to be correct, if it is incorrect it is no more incorrect than any other non correct guess.  To see this formally we use the delta function which is defined as:
+
+\begin{align*}
+\delta_{kj} = \left\{\begin{array}{lr}
+        0, \text{  for } k = j\\
+        1, \text{  for } \text{ else} \\
+        \end{array}\right.
+\end{align*}
+
+Using this notation we can write $L_{kj} = 1 - \delta_{kj}$  This makes the function we want to minimize:
+
+\begin{align*}
+\sum_k L_{kj}p(C_k | x) &= \sum_k (1 - \delta_{kj})p(C_k | x)\\
+&= \sum_k p(C_k | x)  - \delta_{kj}p(C_k | x) \\
+&= \sum_k p(C_k | x)  - \sum_k\delta_{kj}p(C_k | x) \\
+&= 1  - \sum_k\delta_{kj}p(C_k | x) \\
+\end{align*}
+
+In order to minimize this function we want $p(C_k | x) $ to be as large as possible so we choose the class which has the largest posterior probability.
+
+\Large\textbf{Problem 23}
+
+
+
