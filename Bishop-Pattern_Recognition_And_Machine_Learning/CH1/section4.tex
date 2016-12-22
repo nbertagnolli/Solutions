@@ -67,7 +67,204 @@ Using this notation we can write $L_{kj} = 1 - \delta_{kj}$  This makes the func
 
 In order to minimize this function we want $p(C_k | x) $ to be as large as possible so we choose the class which has the largest posterior probability.
 
-\Large\textbf{Problem 23}
+\Large\textbf{Problem 24}
+
+
+\Large\textbf{Problem 25}
+
+\begin{align*}
+  \Exp{L(t, y(x))} &= \int\int \|y(x) - t\|_2^2p(x,t) dxdt\\
+  \frac{d \Exp{L(t, y(x))}}{dy(x)} &= 2\int \|y(x) - t\|_2\frac{y(x) - t}{\|y(x) - t\|_2}p(x,t) dt\\
+  0 &= \int y(x)p(x,t) dt - \int t p(x,t)dt\\
+  y(x) &=\frac{ \int t p(x,t)dt}{\int p(x,t) dt} \\
+  &= \frac{ \int t p(x,t)dt}{p(x)} \\
+  &= \frac{ \int t p(t|x) p(x)dt}{p(x)} = \int t p(t|x) dt \\
+\end{align*}
+
+\Large\textbf{Problem 26}
+
+To start.  If we ask the question what is the information gain of $p(x)^2$ this is the same as how much do we learn from observing that event twice.  This should intuitively be double.  To show this.  Take $p(x)^2 = p(x)p(x) = p(x,x)$.  This means that events are independent and we have already show what this is in terms of information gain $h(x,x) = h(x) + h(x) = 2h(x)$.  Now let's assume that this is true for arbitrary integers i.e. $p(x)^n \Rightarrow nh(x)$.  Call $p(y) = p(x)^n$  then $p(x)p(y) = p(x,y)$ and $h(x, y) = h(x) + h(y)$  by the induction hypothesis $h(y) = nh(x)$ so we have $h(x) + nh(x) = (n+1)h(x)$ and we are done.
+
+\Large\textbf{Problem 29}
+
+We want to show that $H[x] \leq \ln M$ using Jensen's inequality.  First note that for discrete random variables Jensen's inequality is:
+
+\[f(\Exp{x}) \leq \Exp{f(x)}\]
+
+Notice that the definition of entropy is:
+
+\begin{align*}
+H[x] &= -\sum_{i=1}^Mp(x_i)\ln p(x_i)\\
+&= \sum_{i=1}^Mp(x_i)\ln \frac{1}{p(x_i)}
+\end{align*}
+
+Set $f(x) = \ln(x)$ then we have that:
+
+\begin{align*}
+H[x] &= \Exp{f(x)}
+\end{align*}
+
+and
+
+\begin{align*}
+f(\Exp{x}) &= \ln \left(\sum_{i=1}^Mp(x_i)\frac{1}{p(x_i)}\right)\\
+&= \ln M
+\end{align*}
+
+Because $\ln$ is concave, for a handwavy visual proof of this observe that the epigraph of $-\ln$ is convex then we can reverse Jensen's inequality to get the desired results.
+
+
+\Large\textbf{Problem 30}
+
+We want to determine what the KL divergence between two Gaussians is.  The KL Divergence is defined as:
+
+\[KL(p\|q) = -\int p(x) \ln q(x) + \int p(x) \ln p(x) \]
+
+Our Gaussians in question are:
+
+\begin{align*}
+p(x) &= \mathcal{N}(x; \mu, \sigma^2) && q(x) = \mathcal{N}(x; m, s^2)
+\end{align*}
+
+Let's examine the left hand integral first because it is the most troublesome.
+
+\begin{align*}
+L&= \int (2\pi \sigma^2)^{-\frac{1}{2}} e^{-\frac{1}{2\sigma^2}(x-\mu)^2}\ln\left[(2\pi s^2)^{-\frac{1}{2}} e^{-\frac{1}{2s^2}(x-m)^2}\right]\\
+&= \int (2\pi \sigma^2)^{-\frac{1}{2}} e^{-\frac{1}{2\sigma^2}(x-\mu)^2}\left[-\frac{1}{2}\ln(2\pi s^2) -\frac{1}{2s^2}(x-m)^2\right]\\
+&= -\frac{1}{2}\ln(2\pi s^2)\int (2\pi \sigma^2)^{-\frac{1}{2}} e^{-\frac{1}{2\sigma^2}(x-\mu)^2} -\frac{1}{2s^2} \int (x-m)^2(2\pi \sigma^2)^{-\frac{1}{2}} e^{-\frac{1}{2\sigma^2}(x-\mu)^2}\\
+&=-\frac{1}{2}\ln(2\pi s^2)\int \mathcal{N}(x; \mu, \sigma^2) -\frac{1}{2s^2} \int (x-m)^2\mathcal{N}(x; \mu, \sigma^2)\\
+&= -\frac{1}{2}\ln(2\pi s^2) -\frac{1}{2s^2} \int (x-m)^2\mathcal{N}(x; \mu, \sigma^2)\\
+\end{align*}
+
+Now let's expand this last integral:
+
+\begin{align*}
+I &= -\frac{1}{2s^2} \left[\int x^2\mathcal{N}(x; \mu, \sigma^2)-\int 2xm\mathcal{N}(x; \mu, \sigma^2)+\int m^2\mathcal{N}(x; \mu, \sigma^2)\right]\\
+&= -\frac{1}{2s^2} \left[(\sigma^2 + \mu^2)-2m\mu+m^2\right]
+\end{align*}
+
+This last line comes by recognizing that the first integral is the $\Exp{(x-\mu)^2}$ and the second integral is just the expected value of the Gaussian.  Putting it all together for the left hand integral in our original equation we get:
+
+\begin{align*}
+\int p(x) \ln q(x) &= -\frac{1}{2}\ln(2\pi s^2) -\frac{1}{2s^2} \left[(\sigma^2 + \mu^2)-2m\mu+m^2\right]
+\end{align*}
+
+We can get the right hand integral value by substituting in $s^2 = \sigma^2$ and $m = \mu$ to yield:
+
+\begin{align*}
+\int p(x) \ln p(x) &= -\frac{1}{2}\ln(2\pi \sigma^2) -\frac{1}{2}
+\end{align*}
+
+Now it's just simple algebra on these tow equations:
+
+\begin{align*}
+KL(p\|q)  &= \frac{1}{2}\ln(2\pi s^2) +\frac{1}{2s^2} \left[\sigma^2 + \mu^2-2m\mu+m^2\right]-\frac{1}{2}\ln(2\pi \sigma^2) -\frac{1}{2}\\
+&= \frac{1}{2}\ln(2\pi s^2)+\frac{\sigma^2 + (\mu - m)^2}{2s^2}-\frac{1}{2}\ln(2\pi \sigma^2) -\frac{1}{2}
+\end{align*}
+
+We can check this by setting $p(x) = q(x)$ then this equation goes to 0 which is what we would expect and we are done.
+
+\Large\textbf{Problem 31}
+
+To show that $H[x,y] \leq H[x] + H[y]$ with equality iff $x\perp y$ we just need to look at the mutual information.  Which is:
+
+\[I[x,y] = H[y] - H[y|x]\]
+
+We know that $I[x,y] \geq 0 $ with eqality iff $x\perp y$.  Therefore if $x$ and $y$ are not orthogonal then $H[y] - H[y|x] > 0$ because $I[x,y] \geq 0 $.  This implies that $H[y|x]  < H[y]$.  Now by the definition of conditional entropy we have that $H[x,y] = H[y|x] + H[x]$.  Combining this and the inequality derived above we get that $H[x,y] \leq H[x] + H[y]$.  Intuitively  this is saying that the conditional entropy is greatest when the events are independent.  This makes sense because if they are independent then there is no sharing of information.
+
+\Large\textbf{Problem 32}
+
+\Large\textbf{Problem 36}
+
+The definition of convexity is: \[f(\lambda a + (1-\lambda)b) \leq \lambda f(a) + (1-\lambda) f(b)\]
+we start by arranging the terms to have 0 on one side.
+\begin{align*}
+0 &\leq \lambda f(a) + f(b)-\lambda f(b) - f(\lambda a + b-\lambda b) \\
+0 &\leq \lambda f(x+h) + f(b)-\lambda f(b) - f(\lambda (x+h) + b-\lambda b) && a = x+h 
+ &\leq \lambda f(x+h) + f(b)-\lambda f(b)\\
+0 &\leq \lambda f(x+h) + f(x-h)-\lambda f(x-h)  - f(\lambda (x+h) + ( x-h )-\lambda (x-h))\\
+0 &\leq \lambda f(x+h) + f(x-h)-\lambda f(x-h)  - f(x-h+2\lambda h)\\
+0 &\leq \frac{1}{2} f(x+h) + f(x-h)-\frac{1}{2} f(x-h)  - f(x)\\
+0 &\leq  f(x+h) +2 f(x-h)- f(x-h)  - 2f(x)\\
+0 &\leq  f(x+h) + f(x-h)  - 2f(x)\\
+0 &\leq \frac{f(x+h) + f(x-h)  - 2f(x)}{h^2}\\
+0 &\leq f''(x)
+\end{align*}
+
+
+\Large\textbf{Problem 37}
+\begin{align*}
+H[y|x] &= -\int\int p(y,x) \ln p(y|x)dxdy\\
+&= -\int\int p(y,x) \ln \left(\frac{p(x,y)}{p(x)}\right)dxdy\\
+&=  -\int\int p(y,x) \ln p(x,y)dxdy  + \int\int p(y,x) \ln p(x)dxdy\\
+&=  H[x,y]+ \int\int p(y,x) \ln p(x)dxdy\\
+&= H[x,y]+ \int p(x) \ln p(x)dx  && \text{sum rule}\\
+&= H[x,y] - H[x]
+\end{align*}
+
+\Large\textbf{Problem 39}
+
+\large\textbf{(a) H[x]}\newline
+Marginalize out y to get $x = [2/3, 1/3]$ then: \[H[x] = -2/3\log[2/3] - 1/3\log[1/3]\]
+
+\large\textbf{(b) H[y]}\newline
+Marginalize out x to get $y = [1/3, 2/3]$ then: \[H[x] = -1/3\log[1/3] - 2/3\log[2/3]\]
+
+\large\textbf{(c) H[y$|$x]}\newline
+\begin{align*}
+p(y=0|x=0) &= 1/2\\
+p(y=0|x=1) &= 0\\
+p(y=1|x=0) &= 1/2\\
+p(y=1|x=1) &= 1\\
+\end{align*}
+\[H[y|x] = -1/2\log[1/2] - 1/2\log[1/2] \]
+
+\large\textbf{(d) H[x$|$y]}\newline
+\begin{align*}
+p(x=0|y=0) &= 1\\
+p(x=0|y=1) &= 1/2\\
+p(x=1|y=0) &= 0\\
+p(x=1|y=1) &= 1/2\\
+\end{align*}
+\[H[x|y] = -1/2\log[1/2] - 1/2\log[1/2] \]
+
+\large\textbf{(e) H[x, y]}\newline
+This is just the elements in the table.  \[H[x,y] = -1/3\log[1/3] - 1/3\log[1/3]  - 1/3\log[1/3]  = -\log[1/3]\]
+
+\large\textbf{(f) I[x, y]}\newline
+$I[x,y] = H[x] - H[x|y] = 2/3\log[2/3] - 1/3\log[1/3] - 1/2\log[1/2] - 1/2\log[1/2] $
+
+
+\Large\textbf{Problem 40}
+
+Start by recognizing that $\ln(x)$ is a concave function. (You could take the second derivative to see this.)  This means that we should reverse Jensen's inequality to get:
+\begin{align*}
+\sum_{i=1}^N\lambda_i f(x_i) &\leq f\left(\sum_{i=1}^N\lambda_ix_i\right)\\
+\sum_{i=1}^N\lambda_i \ln(x_i) &\leq \ln\left(\sum_{i=1}^N\lambda_ix_i\right)  && f(x) = \ln(x)\\
+\lambda_i \ln\left(\prod_{i=1}^Nx_i\right) &\leq \ln\left(\sum_{i=1}^N\lambda_ix_i\right)  && \ln(xy) = \ln(x) + \ln(y)\\
+\frac{1}{N}\ln\left(\prod_{i=1}^Nx_i\right) &\leq \ln\left(\sum_{i=1}^N\frac{1}{N}x_i\right)  && \lambda_i = \frac{1}{N}\\
+\ln\left(\sqrt[N]{\prod_{i=1}^Nx_i}\right) &\leq \ln\left(\sum_{i=1}^N\frac{1}{N}x_i\right)\\
+\sqrt[N]{\prod_{i=1}^Nx_i} &\leq \sum_{i=1}^N\frac{1}{N}x_i\\
+\end{align*}
+
+\Large\textbf{Problem 41}
+To prove that $I[x,y] = H[y] - H[y|x]$ we just need to use the definition of mutual information:
+
+\begin{align*}
+I[x,y] &= -\int\int p(x,y) \ln\left(\frac{p(x)p(y)}{p(x,y)}\right)dxdy\\
+&= -\int\int p(x,y) \ln (p(x)p(y))dxdy +\int\int p(x,y) \ln p(x,y)dxdy \\
+&= -\int\int p(x,y) \ln (p(x)p(y))dxdy - H[x,y]\\
+&=  -\int\int p(x,y) \ln p(y)dxdy -\int\int p(x,y) \ln p(x)dxdy- H[x,y]\\
+&=  -\int p(y) \ln p(y)dy -\int p(x) \ln p(x)dx - H[x,y]\\
+&=H[x] + H[y]- H[x,y]\\
+&= H[x] + H[y]- H[x] - H[y|x]\\
+&= H[x] - H[y|x]
+\end{align*}
+
+
+
+
+
 
 
 
