@@ -169,6 +169,37 @@ Lastly the mode.  This can be calculated simply by taking the derivative of the 
 
 \Large\textbf{Problem 7}
 
+To begin we notice that the posterior distribution is:
+\[p(\mu | x) = p(x | \mu)p(\mu)\]
+
+So we can write this in terms of the provided distributions as:
+
+\begin{align*}
+p(\mu | x) &= \text{Bin}(m | N, \mu)\text{Beta}(a,b)\\
+&= {m+l \choose m} \mu^m(1-\mu)^{l}\frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)}\mu^{a-1}(1-\mu)^{b-1}\\
+&\propto \mu^m(1-\mu)^{l}\mu^{a-1}(1-\mu)^{b-1}\\
+&=\mu^{a+m-1}(1-\mu)^{b+l-1}\\
+&= \text{Beta}(a + m, b + l)
+\end{align*}
+
+Therefore the posterior expectation is just the expected value of the beta distribution above:
+
+\begin{align*}
+\Exp{p(\mu | m)} &= \frac{a + m}{a + b + m + l}\\
+&= \frac{a}{a + b + m + l} + \frac{m}{a + b + m + l}\\
+\end{align*}
+
+Now simply set $\lambda = \frac{a + b + m + l}{a + b}$  which implies that $1-\lambda = \frac{m + l}{a + b + m + l}$.  If we substitute these into our equation for the expected value of the posterior then we get:
+
+\begin{align*}
+ \Exp{p(\mu | m)} &= \frac{a}{a + b}\lambda + (1 - \lambda)\frac{m}{m+l}\\
+\end{align*}
+
+And we are done.
+
+\Large\textbf{Problem 8}
+
+Here we derive the law of total expectation and the law of total variance.
 
 
 
