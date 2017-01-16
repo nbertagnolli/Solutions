@@ -222,8 +222,65 @@ Now to derive the law of total variance we begin with the definition of variance
 
 Step two above we use the law of total expectation.  In step three we use the fact that $\var{X} + \Exp{X}^2 = \Exp{X^2}$.  In step four we use the linearity of expectation.  In step five we use the fact that $\var{X} - \Exp{X^2} = -\Exp{X}^2$
 
-\Large\textbf{Problem 9}
+\Large\textbf{Problem 10}
 
+Here we derive properties of the Dirichlet distribution.  We start with the expected value.
+
+Without loss of generality I will prove the case for $\Exp[\mu_1]$ it makes some of the notation a little clearer this way.
+\begin{align*}
+\Exp{\mu_1} &=  \frac{1}{B(\alpha)}\int \mu_1 \prod_{i=1}^K\mu_i^{\alpha_i-1 } \\
+&=  \frac{1}{B(\alpha)}\int \mu_1^{\alpha_1} \prod_{i=2}^K\mu_i^{\alpha_i-1} \\
+&=  \frac{1}{B(\alpha)}\int \mu_1^{\beta_1 - 1} \prod_{i=2}^K\mu_i^{\alpha_i-1}  && \beta_1 = \alpha_1 + 1 \\
+&=  \frac{1}{B(\alpha)}\int \mu_1^{\beta_1 - 1} \prod_{i=2}^K\mu_i^{\beta_i-1}  && \beta_i = \alpha_i \text{ }\forall i \neq 1 \\
+&=  \frac{1}{B(\alpha)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{\Gamma(\alpha_0)}{\prod_{i=1}^K \Gamma(\alpha_i)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{\alpha_0\Gamma(\alpha_0)}{\alpha_0\Gamma(\alpha_1)\prod_{i=2}^K \Gamma(\alpha_i)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{\alpha_1\Gamma(\alpha_0 + 1)}{\alpha_0\alpha_1\Gamma(\alpha_1)\prod_{i=2}^K \Gamma(\alpha_i)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{\alpha_1\Gamma(\alpha_0 + 1)}{\alpha_0\Gamma(\alpha_1 + 1)\prod_{i=2}^K \Gamma(\alpha_i)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{\alpha_1\Gamma(\beta_0)}{\alpha_0\Gamma(\beta_1)\prod_{i=2}^K \Gamma(\beta_i)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{\alpha_1}{\alpha_0}\int \frac{\Gamma(\beta_0)}{\prod_{i=1}^K \Gamma(\beta_i)}\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{\alpha_1}{\alpha_0}\int \text{Dir}(\beta) \\
+&=  \frac{\alpha_1}{\alpha_0}\
+\end{align*}
+
+For the Variance we will again use the fac that $var{x} = epx{x^2}- exp{x}^2$
+\begin{align*}
+\Exp{\mu_1^2} &=  \frac{1}{B(\alpha)}\int \mu_1^2 \prod_{i=1}^K\mu_i^{\alpha_i-1 } \\
+&=  \frac{1}{B(\alpha)}\int \mu_1^{\alpha_1 + 1} \prod_{i=2}^K\mu_i^{\alpha_i-1} \\
+&=  \frac{1}{B(\alpha)}\int \mu_1^{\beta_1 - 1} \prod_{i=2}^K\mu_i^{\alpha_i-1}  && \beta_1 = \alpha_1 + 2 \\
+&=  \frac{1}{B(\alpha)}\int \mu_1^{\beta_1 - 1} \prod_{i=2}^K\mu_i^{\beta_i-1}  && \beta_i = \alpha_i \text{ }\forall i \neq 1 \\
+&= \frac{(\alpha_0 + 1)\alpha_0\Gamma(\alpha_0)}{(\alpha_0 + 1)\alpha_0\Gamma(\alpha_1)\prod_{i=2}^K \Gamma(\alpha_i)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{\Gamma(\beta_0)}{(\alpha_0 + 1)\alpha_0\Gamma(\alpha_1)\prod_{i=2}^K \Gamma(\alpha_i)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{(\alpha_1 + 1)\alpha_1\Gamma(\beta_0)}{(\alpha_0 + 1)(\alpha_1 + 1)\alpha_1\alpha_0\Gamma(\alpha_1)\prod_{i=2}^K \Gamma(\alpha_i)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{(\alpha_1 + 1)\alpha_1\Gamma(\beta_0)}{(\alpha_0 + 1)(\alpha_1 + 1)\prod_{i=1}^K \Gamma(\beta_i)}\int\prod_{i=1}^K\mu_i^{\beta-1} \\
+&= \frac{\alpha_1(\alpha_1 + 1)}{\alpha_0(\alpha_0 + 1)}
+\end{align*}
+
+Now we can just plug in this into the equation for variance and solve:
+
+\begin{align*}
+\var{\mu_1} &= \Exp{\mu_1^2}- \Exp{\mu_1}^2 \\
+&= \frac{\alpha_1(\alpha_1 + 1)}{\alpha_0(\alpha_0 + 1)} - \frac{\alpha_1^2}{\alpha_0^2} \\
+&= \frac{\alpha_1\alpha_0(\alpha_1 + 1) - \alpha_1^2(\alpha_0 + 1)}{\alpha_0^2(\alpha_0 + 1)} \\
+&= \frac{\alpha_0\alpha_1^2 + \alpha_0\alpha_1 - \alpha_0\alpha_1^2 - \alpha_1^2}{\alpha_0^2(\alpha_0 + 1)} \\
+&= \frac{\alpha_1(\alpha_0 - \alpha_1)}{\alpha_0^2(\alpha_0 + 1)} \\
+\end{align*}
+
+Lastly we prove the covariance of the Dirichlet distribution.  Which is defined as $\text{Cov}(\mu_i, \mu_j) = exp{\mu_i\mu_j} - exp{\mu_i}exp{\mu_j}$.  The proof proceeds much as the other two have the only difference is now we just look at $exp{\mu_1\mu_2}$  Now we need to substitute $\beta_1 = \alpha_1 + 1$, $\beta_2 = \alpha_2 + 2$ and $\beta_i = \alpha_i$.  If you do this you will eventually get:
+
+\begin{align*}
+\Exp{\mu_i\mu_j} &= \frac{\alpha_i\alpha_j}{\alpha_0(\alpha_0 + 1)}
+\end{align*}
+
+
+Now we just combine them all:
+\begin{align*}
+\text{Cov}(\mu_i, \mu_j) &= \Exp{\mu_i\mu_j} - \Exp{\mu_i}\Exp{\mu_j} \\
+&= \frac{\alpha_i\alpha_j}{\alpha_0(\alpha_0 + 1)} - \frac{\alpha_i}{\alpha_0}\frac{\alpha_j}{\alpha_0} \\
+&= \frac{\alpha_0\alpha_i\alpha_j - \alpha_i\alpha_j(\alpha_0 + 1)}{\alpha_0^2(\alpha_0 + 1)} \\
+&=  \frac{\alpha_0\alpha_i\alpha_j - \alpha_i\alpha_j\alpha_0 - \alpha_i\alpha_j}{\alpha_0^2(\alpha_0 + 1)} \\
+&=  \frac{- \alpha_i\alpha_j}{\alpha_0^2(\alpha_0 + 1)} \\
+\end{align*}
 
 
 
