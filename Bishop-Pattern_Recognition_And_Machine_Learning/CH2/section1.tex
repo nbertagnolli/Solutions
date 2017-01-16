@@ -199,7 +199,32 @@ And we are done.
 
 \Large\textbf{Problem 8}
 
-Here we derive the law of total expectation and the law of total variance.
+Here we derive the law of total expectation and the law of total variance.  To derive the law of total expectation:
+
+\begin{align*}
+\Exp{\Exp{X|Y}} &= \Exp{\sum_x x p(X=x|Y)}\\
+&= \sum_y\sum_x x p(X=x|Y=y)p(Y=y)\\
+&= \sum_x x\sum_y  p(X=x|Y=y)p(Y=y)\\
+&= \sum_x x\sum_y  p(X=x,Y=y)\\
+&= \sum_x xp(x)\\
+&= \Exp{X}
+\end{align*}
+
+Now to derive the law of total variance we begin with the definition of variance:
+
+\begin{align*}
+\var{X} &= \Exp{X^2}_x- \Exp{X}_x^2\\
+&= \Exp{\Exp{X^2|Y}_x}_y - \Exp{\Exp{X|Y}_x}_y^2\\
+&= \Exp{\var{X|Y}_x + \Exp{X|Y}_x^2}_y - \Exp{\Exp{X|Y}_x}_y^2\\
+&= \Exp{\var{X|Y}_x}_y + \Exp{\Exp{X|Y}_x^2}_y + \var{\Exp{X|Y}_x}_y - \Exp{\Exp{X|Y}^2}\\
+&= \Exp{\var{X|Y}_x}_y + \var{\Exp{X|Y}_x}_y 
+\end{align*}
+
+Step two above we use the law of total expectation.  In step three we use the fact that $\var{X} + \Exp{X}^2 = \Exp{X^2}$.  In step four we use the linearity of expectation.  In step five we use the fact that $\var{X} - \Exp{X^2} = -\Exp{X}^2$
+
+\Large\textbf{Problem 9}
+
+
 
 
 
