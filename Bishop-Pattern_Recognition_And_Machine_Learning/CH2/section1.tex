@@ -266,7 +266,7 @@ Now we can just plug in this into the equation for variance and solve:
 &= \frac{\alpha_1(\alpha_0 - \alpha_1)}{\alpha_0^2(\alpha_0 + 1)} \\
 \end{align*}
 
-Lastly we prove the covariance of the Dirichlet distribution.  Which is defined as $\text{Cov}(\mu_i, \mu_j) = exp{\mu_i\mu_j} - exp{\mu_i}exp{\mu_j}$.  The proof proceeds much as the other two have the only difference is now we just look at $exp{\mu_1\mu_2}$  Now we need to substitute $\beta_1 = \alpha_1 + 1$, $\beta_2 = \alpha_2 + 2$ and $\beta_i = \alpha_i$.  If you do this you will eventually get:
+Lastly we prove the covariance of the Dirichlet distribution.  Which is defined as $\text{Cov}(\mu_i, \mu_j) = \Exp{\mu_i\mu_j} - \Exp{\mu_i}\Exp{\mu_j}$.  The proof proceeds much as the other two have the only difference is now we just look at $\Exp{\mu_1\mu_2}$  Now we need to substitute $\beta_1 = \alpha_1 + 1$, $\beta_2 = \alpha_2 + 2$ and $\beta_i = \alpha_i$.  If you do this you will eventually get:
 
 \begin{align*}
 \Exp{\mu_i\mu_j} &= \frac{\alpha_i\alpha_j}{\alpha_0(\alpha_0 + 1)}
@@ -283,7 +283,39 @@ Now we just combine them all:
 \end{align*}
 
 
+\Large\textbf{Problem 11}
 
+As the hint suggests start by differentiating $\prod_{i=1}^k \mu_i^{\alpha_i - 1}$ with respect to $\alpha_j$ without loss of generality we will set $j = 1$ for simple notation.
+
+\begin{align*}
+\frac{d}{d\alpha_1} \prod_{i=1}^k \mu_i^{\alpha_i - 1} &= \frac{d}{d\alpha_1} \prod_{i=1}^k \exp((\alpha_i - 1) \ln\mu_i)\\
+&=  \frac{d}{d\alpha_1} \exp((\alpha_1 - 1)\ln\mu_1) \prod_{i=2}^k \exp((\alpha_i - 1)\ln\mu_i) \\
+&=  \exp((\alpha_1 - 1)\ln\mu_1)\ln\mu_1 \prod_{i=2}^k \exp((\alpha_i - 1)\ln\mu_i) \\
+&= \ln\mu_1 \prod_{i=1}^k \exp((\alpha_i - 1)\ln\mu_i) \\
+&= \ln \mu_1  \prod_{i=1}^k \mu_i^{\alpha_i - 1} 
+\end{align*}
+
+Now we can use this fact to calculate the expectation:
+
+\begin{align*}
+\Exp{\ln \mu_1} &= \beta(\alpha)\int \ln \mu_1  \prod_{i=1}^k \mu_i^{\alpha_i - 1}d\mu \\
+&= \beta(\alpha)\int \frac{d}{d\alpha_1} \prod_{i=1}^k \mu_i^{\alpha_i - 1}d\mu\\
+&=  \beta(\alpha)\frac{d}{d\alpha_1} \int \prod_{i=1}^k \mu_i^{\alpha_i - 1}d\mu\\
+&=  \beta(\alpha)\frac{d}{d\alpha_1} \frac{1}{\beta(\alpha)} \\
+&= -\frac{d}{d\alpha_1}\ln\beta(\alpha)
+\end{align*}
+
+Now the last step is just solving for $\ln\beta(\alpha)$:
+
+\begin{align*}
+\ln\beta(\alpha) &= \ln \frac{\Gamma(\alpha_0)}{\prod\Gamma(\alpha_i)}\\
+&= \ln \Gamma(\alpha_0) - \ln \prod\Gamma(\alpha_i)\\
+&= \ln \Gamma(\alpha_0) - \sum_i \ln \Gamma(\alpha_i)\\
+\end{align*}
+
+Now you should be able to see that by applying the negative derivative we end up with our desired result of:
+
+\[\Exp{\ln \mu_j} = \psi(\alpha_j) - \psi(\alpha_0)\]
 
 
 
