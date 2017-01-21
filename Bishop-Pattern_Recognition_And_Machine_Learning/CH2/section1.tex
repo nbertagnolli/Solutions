@@ -362,7 +362,26 @@ Lastly we do the variance.  It is very similar to the expectation.
 
 \Large\textbf{Problem 13}
 
-Now we need to derive the 
+Now we need to derive the KL Divergence for two multivariate Gaussian.  We define our two Gaussians as:
+
+\begin{align*}
+&p(x) = \mathcal{N}(x| ,\mu, \Sigma) & q(x) &= \mathcal{N}(x| ,m, L) 
+\end{align*} 
+
+Now we can start with the definition of the KL Divergence:
+
+\begin{align*}
+KL&= \int p(x) \ln \frac{q(x)}{p(x)}dx \\
+&= \int p(x) \left[\ln q(x) - \ln p(x) \right]dx \\
+&= \int p(x) \frac{1}{2}\left[\ln\frac{|L|}{|\Sigma|} + (x-m)^TL^{-1}(x-m)  -  (x-\mu)^T\Sigma^{-1}(x-\mu)\right]dx \\
+&= \frac{1}{2}\left[\ln\frac{|L|}{|\Sigma|} + \int(x-m)^TL^{-1}(x-m) p(x) - \int  (x-\mu)^T\Sigma^{-1}(x-\mu)p(x)\right]\\
+&= \frac{1}{2}\left[\ln\frac{|L|}{|\Sigma|} + \Exp{(x-m)^TL^{-1}(x-m)} - \Exp{(x-\mu)^T\Sigma^{-1}(x-\mu)}\right] \\
+&= \frac{1}{2}\left[\ln\frac{|L|}{|\Sigma|} + tr(\L^{-1}\Sigma) + (\mu-m)^TL^{-1}(\mu-m) - tr(\Sigma^{-1}\Sigma) - (\mu-\mu)^T\Sigma(\mu-\mu)\right] \\
+&= \frac{1}{2}\left[\ln\frac{|L|}{|\Sigma|} + tr(\L^{-1}\Sigma) + (\mu-m)^TL^{-1}(\mu-m) - tr(I_d) \right] \\
+&= \frac{1}{2}\left[\ln\frac{|L|}{|\Sigma|} + tr(\L^{-1}\Sigma) + (\mu-m)^TL^{-1}(\mu-m) - D \right] \\
+\end{align*}
+
+Now from step 5 to step 6 remember that the expectation is with respect to the distribution $p(x)$ which has mean $\mu$ and variance $\Sigma$.  We use the fact that $\Exp{x^TAx} = c^TAc + tr(A\Sigma)$ where $c$ is the mean of the distribution and $\Sigma$ is the variance.
 
 
 \Large\textbf{Problem 22}
