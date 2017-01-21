@@ -383,6 +383,25 @@ KL&= \int p(x) \ln \frac{q(x)}{p(x)}dx \\
 
 Now from step 5 to step 6 remember that the expectation is with respect to the distribution $p(x)$ which has mean $\mu$ and variance $\Sigma$.  We use the fact that $\Exp{x^TAx} = c^TAc + tr(A\Sigma)$ where $c$ is the mean of the distribution and $\Sigma$ is the variance.
 
+\Large\textbf{Problem 14}
+
+
+\Large\textbf{Problem 15}
+Entropy is defined as:
+\begin{align*}
+H[x] &= -\int p(x) \ln p(x) dx \\
+&= -\int p(x) \ln \left[\frac{1}{((2\pi)^D|\Sigma|)^2}\exp\left(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\right)\right] dx \\
+&= -\int p(x) \left[\ln \frac{1}{((2\pi)^D|\Sigma|)^2} -\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\right] dx \\
+&= \frac{1}{2}\int p(x) \left[\ln (2\pi)^D|\Sigma| + (x-\mu)^T\Sigma^{-1}(x-\mu)\right] dx \\
+&= \frac{1}{2}\ln (2\pi)^D|\Sigma|\int p(x) + \frac{1}{2}\int (x-\mu)^T\Sigma^{-1}(x-\mu)p(x) dx \\
+&= \frac{D}{2}\ln 2\pi + \frac{1}{2}\ln |\Sigma| + \frac{1}{2}\Exp{(x-\mu)^T\Sigma^{-1}(x-\mu)} \\
+&= \frac{1}{2}\ln|\Sigma| + \frac{D}{2} \ln2\pi+ \frac{1}{2}(\mu-\mu)^T\Sigma^{-1}(\mu-\mu) + \frac{1}{2}tr(\Sigma^{-1}\Sigma) \\
+&= \frac{1}{2}\ln|\Sigma| + \frac{D}{2} \ln2\pi +  \frac{1}{2}tr(I_D) \\
+&= \frac{1}{2}\ln|\Sigma| + \frac{D}{2} \ln2\pi +  \frac{D}{2} \\
+&= \frac{1}{2}\ln|\Sigma| + \frac{D}{2} (1 + \ln2\pi) \\
+\end{align*}
+
+
 
 \Large\textbf{Problem 22}
 
