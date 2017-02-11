@@ -401,6 +401,105 @@ H[x] &= -\int p(x) \ln p(x) dx \\
 &= \frac{1}{2}\ln|\Sigma| + \frac{D}{2} (1 + \ln2\pi) \\
 \end{align*}
 
+\Large\textbf{Problem 17}
+
+We know that any square matrix can be written in the form of a summation between a symmetric matrix and an antisymmetric matrix.  To see this notice that for a square matrix $A$ we can decompose it as:
+
+\begin{align*}
+A &= \frac{1}{2}(A-A^T) + \frac{1}{2}(A+A^T)
+\end{align*}
+
+Also notice that $(A-A^T)^T =A^T - A = -(A-A^T)$ and $(A + A^T)^T = (A^T + A) = (A + A^T)$.
+
+With this in mind all we have to do is write the precision matrix $\Lambda$ in terms of these two components.
+
+\begin{align*}
+\Lambda &= \frac{1}{2}(\Lambda - \Lambda^T) + \frac{1}{2}(\Lambda + \Lambda^T)\\
+\Lambda_{ij} &= \frac{1}{2}(\Lambda_{ij} - \Lambda_{ji}) + \frac{1}{2}(\Lambda_{ij} + \Lambda_{ji})\\
+\end{align*}
+
+Now let's examine the exponent of the Gaussian in summation form:
+
+\begin{align*}
+&= \frac{1}{2}\sum_i\sum_j (x_i - \mu_i)(\Lambda^S_{ij} + \Lambda^A_{ij})(x_j - \mu_j)
+\end{align*}
+
+If we look at all the terms involving the antisymmetric portion $\Lambda_{ij}^A$ we see that they are:
+
+\begin{align*}
+x_ix_j\Lambda_{ij}^A - x_j\mu_i\Lambda_{ij}^A - x_i\mu_j\Lambda_{ij}^A + \mu_i\mu_j\Lambda_{ij}^A
+\end{align*}
+But as we sum over $i$ and $j$ we also get:
+\begin{align*}
+x_jx_i\Lambda_{ji}^A - x_i\mu_j\Lambda_{ji}^A - x_j\mu_i\Lambda_{ji}^A + \mu_j\mu_i\Lambda_{ji}^A \\
+\end{align*}
+
+But since $\Lambda^A_{ij} = -\Lambda^A_{ji}$ The first equation can be written as:
+
+\begin{align*}
+-x_ix_j\Lambda_{ji}^A + x_j\mu_i\Lambda_{ji}^A + x_i\mu_j\Lambda_{ji}^A - \mu_i\mu_j\Lambda_{ji}^A
+\end{align*}
+
+Which cancels the second equation.  Therefore the sum of the antisymmetric form disappears in the summation.
+
+\Large\textbf{Problem 18}
+
+To prove that the eigenvalues of a real symmetric matrix are real begin with the definition of eigenvalue eigenvector pair:
+
+\begin{align*}
+Ax &= \lambda x \\
+\overline{Ax} &= \overline{\lambda x} \\
+A\overline{x} &= \overline{\lambda} \overline{x}  &&  A \in \mathbb{R}\\
+\overline{x}^T A^T &= \overline{x}^T\overline{\lambda} \\
+\overline{x}^T A &= \overline{x}^T\overline{\lambda} && A = A^T\\
+\end{align*}
+
+Now just multiply the last equation on the right by $x$ and the first equation on the left by $\overline{x}^T$  Then we get two equations:
+
+\begin{align*}
+\overline{x}^TAx &= \overline{x}^T\lambda x \\
+\overline{x}^TAx &= \overline{x}^T\overline{\lambda} x \\
+\end{align*}
+
+The left hand side of both equations is identical so we can set them equal and we see:
+
+\begin{align*}
+ \overline{x}^T\lambda x  &=  \overline{x}^T\overline{\lambda} x 
+\end{align*}
+
+Which implies that $\lambda = \overline{\lambda}$.  This means that $\lambda$ must be real and we are done.
+
+Now we need to show that the eigenvectors are orthogonal when $\lambda_1 \neq \lambda_2$.  To do this we just use the eigenvalue equation for these two difference eigenvalues.
+
+\begin{align*}
+\lambda_1x^Ty = (Ax)^Ty = x^TA^Ty = x^TAy = \lambda_2x^Ty
+\end{align*}
+
+This means that $\lambda_1x^Ty = \lambda_2x^Ty$ but $\lambda_1 \neq \lambda_2$ therefore $x^Ty = 0$ which means that they are orthogonal.
+
+The last piece is to show that this is in general true even when the two eigenvalues are the same.
+In the case of repeated eigenvalues I have 1 of two cases.  Either they are repeated but non zero, or there are zero eigenvalues.  If there are zero eigenvalues then the matrix is singular and $Ax = \lambda x = 0 x = 0$ is true.  This means that $x$ is in the null space of $A$ and is thus perpendicular to the column space.  All of the eigenvectors with non zero eigenvalues will be in the column space of $A$ so this new $x$ is perpendicular to them .  In the other case when there are repeated eigenvalues we know that the eigenvalues span the column space of the matrix.  Let's just assume that the matrix is full rank. This means that the eigenvectors need to form a basis for the column space of the matrix $A$.  With $d$ repeated eigenvalues we have a $d$ dimensional plane through which we can draw our eigenvectors choose them to be orthogonal.
+
+
+\Large\textbf{Problem 19}
+
+
+
+\Large\textbf{Problem 21}
+
+The matrix is symmetric so we only need to count all elements above and on the diagonal of the matrix.  Notice that each off diagonal of the matrix has one less element than the preceding diagonal. So we can create a series of the form:
+
+\begin{align*}
+\sum_{n=1}^D n &= \frac{D(D+1)}{2}
+\end{align*}
+
+\Large\textbf{Problem 26}
+
+This is just simple algebra:
+
+\begin{align*}
+I &= 
+\end{align*}
 
 
 \Large\textbf{Problem 22}
@@ -416,6 +515,7 @@ B^TA B&= BA B\\
 B^TI&= BI\\
 B^T &= B
 \end{align*}
+
 
 
 
