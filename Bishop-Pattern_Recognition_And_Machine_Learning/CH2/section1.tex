@@ -519,6 +519,20 @@ I x &= \lambda A^{-1}x
 which means that the eigenvalue of $A^{-1} = \frac{1}{\lambda}$.  Combining this fact with the spectral theorem and the above proof gives the desired results.
 
 
+\Large\textbf{Problem 20}
+Start by representing the unknown vector $a$ by a linear combination of the eigenvectors of $\Sigma$ as
+\[a = a_1 u_1 + a_2u_2 + ... + a_nu_n\]
+Next just follow the matrix multiplication
+\begin{align*}
+a^T\Sigma a &= (a_1 u_1 + a_2u_2 + ... + a_nu_n)^T \Sigma (a_1 u_1 + a_2u_2 + ... + a_nu_n) \\
+&= (a_1 u_1 + a_2u_2 + ... + a_nu_n)^T (a_1  \Sigma u_1 + a_2  \Sigma u_2 + ... + a_n  \Sigma u_n) \\
+&= (a_1 u_1 + a_2u_2 + ... + a_nu_n)^T (a_1  \lambda_1 u_1 + a_2  \lambda_2 u_2 + ... + a_n  \lambda_n u_n) \\
+&=  a_1^2  \lambda_1 u_1^Tu_1 + a_2^2  \lambda_2 u_2^Tu_2 + ... + a_n^2  \lambda_n u_n^Tu_n \\
+&=  a_1^2  \lambda_1 + a_2^2  \lambda_2 + ... + a_n^2  \lambda_n\\
+\end{align*}
+
+Since $a$ is real $a^2$ must be positive.  Therefore all $\lambda$ must be greater then 0 because otherwise it would be possible to construct an $a$ such that the 0 or negative $\lambda$ was selected.
+
 
 \Large\textbf{Problem 21}
 
