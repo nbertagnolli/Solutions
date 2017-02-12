@@ -622,13 +622,21 @@ The lower right block is:
 -CMBD^{-1} + I + CMBD^{-1} &= I
 \end{align*}
 
+\Large\textbf{Problem 25}
 
 \Large\textbf{Problem 26}
 
 This is just simple algebra:
 
 \begin{align*}
-I &= 
+I &= (A^{-1} - A^{-1}B(C^{-1} + DA^{-1}B)^{-1}DA^{-1})(A+BCD)\\
+&= I + A^{-1}B(-(C^{-1}+DA^{-1}B)^{-1} + C - (C^{-1} + DA^{-1}B)^{-1}DA^{-1}BC)D\\
+&= I + A^{-1}B(-(C^{-1}+DA^{-1}B)^{-1}(I + DA^{-1}BC) + C)D\\
+&= I + A^{-1}B(-(C^{-1}+DA^{-1}B)^{-1}(C^{-1}C + DA^{-1}BC) + C)D\\
+&= I + A^{-1}B(-(C^{-1}+DA^{-1}B)^{-1}(C^{-1} + DA^{-1}B)C + C)D\\
+&= I + A^{-1}B(-IC + C)D\\
+&= I + A^{-1}B(0)D\\
+&= I
 \end{align*}
 
 
