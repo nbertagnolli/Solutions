@@ -483,6 +483,41 @@ In the case of repeated eigenvalues I have 1 of two cases.  Either they are repe
 
 \Large\textbf{Problem 19}
 
+\begin{align*}
+A &= Q\Sigma Q^T && \text{Spectral Theorem}\\
+Ax &= Q\Sigma Q^Tx \\
+&= Q\Sigma \begin{bmatrix}
+q_1^Tx\\
+\vdots \\
+q_n^Tx
+\end{bmatrix} \\
+&= Q\begin{bmatrix}
+\lambda_1q_1^Tx\\
+\vdots \\
+\lambda_n q_n^Tx
+\end{bmatrix} \\
+&= \begin{bmatrix}
+q_1 & \hdots & q_n
+\end{bmatrix}
+\begin{bmatrix}
+\lambda_1q_1^Tx\\
+\vdots \\
+\lambda_n q_n^Tx
+\end{bmatrix} \\
+&= \sum_{k=1}^n q_k(\lambda_kq_k^Tx)\\
+&= \sum_{k=1}^n \lambda_kq_kq_k^Tx
+\end{align*}
+
+We know that the inverse of a matrix has the inverse eigenvalues as it's eigenvalues.  To see this notice:
+
+\begin{align*}
+Ax &= \lambda x\\
+A^{-1}Ax &= A^{-1}\lambda x \\ 
+I x &= \lambda A^{-1}x
+\end{align*}
+
+which means that the eigenvalue of $A^{-1} = \frac{1}{\lambda}$.  Combining this fact with the spectral theorem and the above proof gives the desired results.
+
 
 
 \Large\textbf{Problem 21}
