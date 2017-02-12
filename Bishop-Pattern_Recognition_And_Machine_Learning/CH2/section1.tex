@@ -542,14 +542,6 @@ The matrix is symmetric so we only need to count all elements above and on the d
 \sum_{n=1}^D n &= \frac{D(D+1)}{2}
 \end{align*}
 
-\Large\textbf{Problem 26}
-
-This is just simple algebra:
-
-\begin{align*}
-I &= 
-\end{align*}
-
 
 \Large\textbf{Problem 22}
 
@@ -566,6 +558,78 @@ B^T &= B
 \end{align*}
 
 
+\Large\textbf{Problem 24}
+
+This is just doing the multiplication from both the right and the left.  Starting with the right let's examine each of the blocks
+
+$M = (A - BD^{-1}C)^{-1}$
+\begin{align*}
+&= \begin{bmatrix}
+M & -MBD^{-1}C \\
+-D^{-1}CM & D^{-1} + D^{-1}CMBD^{-1}
+\end{bmatrix}
+\begin{bmatrix}
+A & B \\
+C & D 
+\end{bmatrix}
+\end{align*}
+The upper left block is:
+\begin{align*}
+MA - MBD^{-1}C  &= M(A-MBD^{-1}C)
+&= MM^{-1}
+&= I
+\end{align*}
+The upper right block is:
+\begin{align*}
+MB - MBD^{-1}D &= MB -MBI = 0
+\end{align*}
+
+The lower left block is:
+\begin{align*}
+-D^{-1}C[-MA + I + MBD^{-1}C] &= -D^{-1}C[I -M (A - BD^{-1}C)] \\
+&= -D^{-1}C[I -MM^{-1}] \\
+&=  -D^{-1}C[I -I] \\
+&= 0
+\end{align*}
+
+The lower right block is:
+\begin{align*}
+LRB &= -D^{-1}CMB + DD^{-1} + D^{-1}CMBD^{-1}D \\
+&= -D^{-1}CMB + I + D^{-1}CMBI \\
+&= I
+\end{align*}
+
+Now from multiplication on the left side:
+The upper left block is:
+\begin{align*}
+AM - BD^{-1}CM &= (A-BD^{-1}C)M = I
+\end{align*}
+The upper right block is:
+\begin{align*}
+-AMBD^{-1} + BD^{-1} + BD^{-1}CMBD^{-1} &= [-AM + I + BD^{-1}CM]BD^{-1}\\
+&= [I -(A - BD^{-1}C)M]BD^{-1}\\
+&= [I -M^{-1}M]BD^{-1}\\
+&= 0
+\end{align*}
+
+The lower left block is:
+\begin{align*}
+CM - DD^{-1}CM &= CM-CM=0
+\end{align*}
+
+The lower right block is:
+\begin{align*}
+-CMBD^{-1} + I + CMBD^{-1} &= I
+\end{align*}
+
+
+\Large\textbf{Problem 26}
+
+This is just simple algebra:
+
+\begin{align*}
+I &= 
+\end{align*}
 
 
 
