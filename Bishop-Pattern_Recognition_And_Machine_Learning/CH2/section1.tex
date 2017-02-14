@@ -677,3 +677,24 @@ D^{-1} + D^{-1}CMBD^{-1} &= L^{-1} + L^{-1}(-LA)\Lambda^{-1}(-A^TL)L^{-1} \\
 &= L^{-1} + A\Lambda^{-1}A^T
 \end{align*}
 
+\Large\textbf{Problem 30}
+This is just simple matrix multiplication...
+\begin{align*}
+\Exp{z} &= \begin{bmatrix}
+\Lambda^{-1} & \Lambda^{-1}A^T \\
+A\Lambda^{-1} & \Lambda^{-1} + A\Lambda^{-1}A^T
+\end{bmatrix}
+\begin{bmatrix}
+\Lambda \mu - A^TLb \\
+Lb
+\end{bmatrix} \\
+&= \begin{bmatrix}
+\Lambda^{-1}\Lambda\mu - \Lambda A^TLb + \Lambda^{-1}A^TLb \\
+A\Lambda^{-1}\Lambda\mu - A\Lambda^{-1}A^TLb + L^{-1}Lb + A\Lambda^{-1}A^TLb
+\end{bmatrix} \\
+&= \begin{bmatrix}
+\mu \\
+A\mu  + b 
+\end{bmatrix} \\
+\end{align*}
+
