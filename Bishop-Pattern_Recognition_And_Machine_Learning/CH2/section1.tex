@@ -622,8 +622,6 @@ The lower right block is:
 -CMBD^{-1} + I + CMBD^{-1} &= I
 \end{align*}
 
-\Large\textbf{Problem 25}
-
 \Large\textbf{Problem 26}
 
 This is just simple algebra:
@@ -640,6 +638,42 @@ I &= (A^{-1} - A^{-1}B(C^{-1} + DA^{-1}B)^{-1}DA^{-1})(A+BCD)\\
 \end{align*}
 
 
+\Large\textbf{Problem 29}
 
+The precision matrix is:
 
+\begin{align*}
+R &= \begin{bmatrix}
+\Lambda + A^TLA & -A^TL \\
+-LA & L
+\end{bmatrix}
+\end{align*}
+
+Using the partitioned matrix inversion formula we can solve for each position of the matrix:
+
+Upper Left corner:
+\begin{align*}
+M &= (A - BD^{-1}C)^{-1} \\ 
+&= (\Lambda +A^TLA - A^TLL)^{-1}\\
+&= (\Lambda +A^TLA - A^TLL)^{-1}\\
+&= \Lambda^{-1}
+\end{align*}
+
+Upper Right corner:
+\begin{align*}
+-MBD^{-1} &= -\Lambda^{-1}(-A^TL)L^{-1} \\
+&= \Lambda^{-1}A^T
+\end{align*}
+
+Lower Left Corner:
+\begin{align*}
+-D^{-1}CM &= -L^{-1}(-LA)\Lambda^{-1} \\
+&= A\Lambda^{-1}
+\end{align*}
+
+Lower Right Corner:
+\begin{align*}
+D^{-1} + D^{-1}CMBD^{-1} &= L^{-1} + L^{-1}(-LA)\Lambda^{-1}(-A^TL)L^{-1} \\
+&= L^{-1} + A\Lambda^{-1}A^T
+\end{align*}
 
