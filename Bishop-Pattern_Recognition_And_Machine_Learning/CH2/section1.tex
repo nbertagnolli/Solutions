@@ -698,3 +698,15 @@ A\mu  + b
 \end{bmatrix} \\
 \end{align*}
 
+\Large\textbf{Problem 31}
+
+We know that the prior is $p(x) = \mathcal{N}(x | \mu_x, \Sigma_x)$.  Because $y = x + z$ we know that the conditional distribution is $p(y| x) = \mathcal{N}(y| x + \mu_z, \Sigma_z)$   Then we can use the fact that $p(y|x) = \mathcal{N}(y|Ax + b, L^{-1})$ and $p(x) = \mathcal{N}(x| \mu, \Lambda^{-1})$ to give us that $A = I$, $b = \mu_z$, $\mu=\mu_x$, $\L^{-1} = \Sigma_z$, and $\Lambda^{-1} = \Sigma_x$.  We can substitute these into the following identities to yield the desired result:
+
+\begin{align*}
+\Exp{y} &= A\mu + b\\
+&= I\mu_x + \mu_z\\
+&= \mu_x + \mu_z \\
+\cov{y}&= L^{-1} +  A\Lambda^{-1}A^T \\
+&= \Sigma_z + \Sigma_x
+\end{align*}
+
