@@ -710,3 +710,18 @@ We know that the prior is $p(x) = \mathcal{N}(x | \mu_x, \Sigma_x)$.  Because $y
 &= \Sigma_z + \Sigma_x
 \end{align*}
 
+
+\Large\textbf{Problem 35}
+
+The first part of this problem is proved in the textbook. 
+The interesting part is showing how the Maximum likelihood estimate of the co variance is biased.  To do that just substitute in the definition of $\mu_{ML}$ and solve algebraically.
+\begin{align*}
+\Exp{\Sigma_{ML}} &= \mathbb{E}\left[\frac{1}{N}\sum_{i=n}^{N}(x_n - \mu_{ML})(x_n - \mu_{ML})^T\right] \\
+&= \frac{1}{N}\sum_{i=n}^{N}\Exp{\left(x_n - \frac{1}{N}\sum_{k=1}^Nx_k\right)\left(x_n - \frac{1}{N}\sum_{l=1}^Nx_l\right)^T} \\
+&= \frac{1}{N}\sum_{i=n}^{N}\Exp{x_nx_n^T - \frac{x_n}{N}\sum_{k=1}^Nx_k^T - \frac{1}{N}\sum_{l=1}^Nx_lx_n^T + \frac{1}{N^2}\sum_{k=1}^N\sum_{l=1}^Nx_kx_l^T} \\
+&= \Exp{\Exp{x_nx_n^T - \frac{x_n}{N}\sum_{k=1}^Nx_k^T - \frac{1}{N}\sum_{l=1}^Nx_lx_n^T + \frac{1}{N^2}\sum_{k=1}^N\sum_{l=1}^Nx_kx_l^T}} \\
+&= \mu\mu^T+\Sigma - 2\left(\mu\mu^T + \frac{1}{N}\Sigma\right) + \frac{1}{N^2}\sum_{k=1}^N\sum_{l=1}^N\Exp{x_kx_l^T}\\
+&= -\mu\mu^T + \Sigma - \frac{2}{N}\Sigma+\mu\mu^T + \frac{1}{N}\Sigma \\
+&= \Sigma - \frac{1}{N}\Sigma \\
+&=  \frac{N - 1}{N}\Sigma \\
+\end{align*}
