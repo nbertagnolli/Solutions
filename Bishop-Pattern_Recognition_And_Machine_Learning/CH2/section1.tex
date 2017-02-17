@@ -725,3 +725,20 @@ The interesting part is showing how the Maximum likelihood estimate of the co va
 &= \Sigma - \frac{1}{N}\Sigma \\
 &=  \frac{N - 1}{N}\Sigma \\
 \end{align*}
+
+
+\Large\textbf{Problem 41}
+
+Here we prove that the Gamma Distribution is normalized.  The Gamma Distribution is defined as:
+\[\Gamma(x | \alpha, \beta) = \frac{\beta^\alpha x^{\alpha-1}e^{-x\beta}}{\Gamma(\alpha)}\]
+Now we just have to integrate over the domain of this function $[0, \infty]$
+
+\begin{align*}
+\Gamma(\alpha) &= \int_0^\infty \beta^\alpha x^{\alpha-1}e^{-x\beta}dx \\
+&= \int_0^\infty \beta(\beta x)^{\alpha-1}e^{-x\beta}dx \\
+&= \int_0^\infty \beta u^{\alpha-1}e^{-u}\frac{1}{\beta}du && u = \beta x \text{, } du = \beta dx\\
+&=\int_0^\infty u^{\alpha-1}e^{-u}du \\
+&= \Gamma(\alpha)
+\end{align*}
+
+Therefore our normalizing constant is indeed $\Gamma(\alpha)$ and the gamma distribution is normalized
